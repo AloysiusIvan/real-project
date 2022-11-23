@@ -14,9 +14,10 @@ class UserAccountController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function listuser()
     {
-        //
+        $user = User::where('nik', '!=', 'admin')->where('validasi', 'wait')->get();
+        return view('admin/cmsuser', compact('user'));
     }
 
     /**
@@ -84,10 +85,6 @@ class UserAccountController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.

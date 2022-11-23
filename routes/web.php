@@ -35,10 +35,7 @@ Route::get('/admin', function () {
     return view('admin/loginadmin');
 });
 
-Route::get('/cmsuser', function () {
-    return view('admin/cmsuser');
-});
-
 Route::post('/loginuser', [UserLoginController::class,'loginuser'])->name('loginuser');
 Route::post('/regisuser', [UserAccountController::class,'regisuser'])->name('regisuser');
 Route::post('/loginadmin', [UserLoginController::class,'loginadmin'])->name('loginadmin');
+Route::get('/cmsuser', [UserAccountController::class,'listuser'])->name('cmsuser');

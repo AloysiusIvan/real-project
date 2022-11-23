@@ -6,10 +6,10 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Forms - Admin One HTML - Bulma Admin Dashboard</title>
+        <title>Visit Techno</title>
 
         <!-- Bulma is included -->
-        <link rel="stylesheet" href="{{ URL::asset('admin/css/main.min.css') }}">
+        <link rel="stylesheet" href="{{ URL::asset('adminsrc/css/main.min.css') }}">
 
         <!-- Fonts -->
         <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -18,6 +18,12 @@
             rel="stylesheet"
             type="text/css">
     </head>
+    <style>
+        .tabs li.is-active a {
+            border-bottom-color: #2c598d;
+            color: #2c598d;
+        }
+    </style>
     <body>
         <div id="app">
             <nav id="navbar-main" class="navbar is-fixed-top">
@@ -69,7 +75,7 @@
                     </ul>
                     <ul class="menu-list">
                         <li>
-                            <a href="tables.html" class="is-active has-icon">
+                            <a href="{{route('cmsuser')}}" class="is-active has-icon">
                                 <span class="icon">
                                     <i class="mdi mdi-account-circle"></i>
                                 </span>
@@ -173,59 +179,56 @@
             </section>
             <section class="section is-main-section">
                 <div class="card has-table">
-                        <div class="tabs is-boxed mb-0">
-                            <ul>
-                                <li class="is-active">
-                                    <a>
-                                        <span class="icon is-small">
-                                            <i class="mdi mdi-clock" aria-hidden="true"></i>
-                                        </span>
-                                        <span>Waiting</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a>
-                                        <span class="icon is-small">
-                                            <i class="mdi mdi-close-circle" aria-hidden="true"></i>
-                                        </span>
-                                        <span>Not Valid</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a>
-                                        <span class="icon is-small">
-                                            <i class="mdi mdi-check-circle" aria-hidden="true"></i>
-                                        </span>
-                                        <span>Valid</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="tabs is-boxed mb-0">
+                        <ul>
+                            <li class="is-active">
+                                <a>
+                                    <span class="icon is-small">
+                                        <i class="mdi mdi-clock" aria-hidden="true"></i>
+                                    </span>
+                                    <span>Waiting</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <span class="icon is-small">
+                                        <i class="mdi mdi-close-circle" aria-hidden="true"></i>
+                                    </span>
+                                    <span>Not Valid</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <span class="icon is-small">
+                                        <i class="mdi mdi-check-circle" aria-hidden="true"></i>
+                                    </span>
+                                    <span>Valid</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                     <div class="card-content">
                         <div class="b-table has-pagination">
                             <div class="table-wrapper has-mobile-cards">
                                 <table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
                                     <thead>
                                         <tr>
+                                            <th>NIK</th>
                                             <th>Name</th>
-                                            <th>Company</th>
-                                            <th>City</th>
-                                            <th>Progress</th>
+                                            <th>Profesi</th>
+                                            <th>Nama Institusi</th>
                                             <th>Created</th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach ($user as $item)
                                         <tr>
-                                            <td data-label="Name">Rebecca Bauch</td>
-                                            <td data-label="Company">Daugherty-Daniel</td>
-                                            <td data-label="City">South Cory</td>
-                                            <td data-label="Progress" class="is-progress-cell">
-                                                <progress max="100" class="progress is-small is-primary" value="79">79</progress>
-                                            </td>
-                                            <td data-label="Created">
-                                                <small class="has-text-grey is-abbr-like" title="Oct 25, 2020">Oct 25, 2020</small>
-                                            </td>
+                                            <td data-label="Name">{{$item->nik}}</td>
+                                            <td data-label="Company">{{$item->name}}</td>
+                                            <td data-label="City">{{$item->profesi}}</td>
+                                            <td data-label="Progress">{{$item->nama_institusi}}</td>
+                                            <td data-label="Created">{{$item->created_at->format('d M, Y')}}</td>
                                             <td class="is-actions-cell">
                                                 <div class="buttons is-right">
                                                     <button class="button is-small is-primary" type="button">
@@ -244,62 +247,7 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td data-label="Name">Felicita Yundt</td>
-                                            <td data-label="Company">Johns-Weissnat</td>
-                                            <td data-label="City">East Ariel</td>
-                                            <td data-label="Progress" class="is-progress-cell">
-                                                <progress max="100" class="progress is-small is-primary" value="67">67</progress>
-                                            </td>
-                                            <td data-label="Created">
-                                                <small class="has-text-grey is-abbr-like" title="Jan 8, 2020">Jan 8, 2020</small>
-                                            </td>
-                                            <td class="is-actions-cell">
-                                                <div class="buttons is-right">
-                                                    <button class="button is-small is-primary" type="button">
-                                                        <span class="icon">
-                                                            <i class="mdi mdi-eye"></i>
-                                                        </span>
-                                                    </button>
-                                                    <button
-                                                        class="button is-small is-danger jb-modal"
-                                                        data-target="sample-modal"
-                                                        type="button">
-                                                        <span class="icon">
-                                                            <i class="mdi mdi-trash-can"></i>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td data-label="Name">Mr. Larry Satterfield V</td>
-                                            <td data-label="Company">Hyatt Ltd</td>
-                                            <td data-label="City">Windlerburgh</td>
-                                            <td data-label="Progress" class="is-progress-cell">
-                                                <progress max="100" class="progress is-small is-primary" value="16">16</progress>
-                                            </td>
-                                            <td data-label="Created">
-                                                <small class="has-text-grey is-abbr-like" title="Dec 18, 2020">Dec 18, 2020</small>
-                                            </td>
-                                            <td class="is-actions-cell">
-                                                <div class="buttons is-right">
-                                                    <button class="button is-small is-primary" type="button">
-                                                        <span class="icon">
-                                                            <i class="mdi mdi-eye"></i>
-                                                        </span>
-                                                    </button>
-                                                    <button
-                                                        class="button is-small is-danger jb-modal"
-                                                        data-target="sample-modal"
-                                                        type="button">
-                                                        <span class="icon">
-                                                            <i class="mdi mdi-trash-can"></i>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -361,7 +309,7 @@
         </div>
 
         <!-- Scripts below are for demo only -->
-        <script type="text/javascript" src="{{ URL::asset('admin/js/main.min.js') }}"></script>
+        <script type="text/javascript" src="{{ URL::asset('adminsrc/js/main.min.js') }}"></script>
 
         <!-- Icons below are for demo only. Feel free to use any icon pack. Docs:
         https://bulma.io/documentation/elements/icon/ -->

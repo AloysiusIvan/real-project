@@ -62,9 +62,10 @@ class UserAccountController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function showuser($id)
     {
-        //
+        $userdata = User::where('id', $id)->get();
+        return view('admin/detailuser', compact('userdata'));
     }
 
     /**
@@ -75,7 +76,7 @@ class UserAccountController extends Controller
      */
     public function edit($id)
     {
-        //
+        
     }
 
     /**
@@ -85,6 +86,13 @@ class UserAccountController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function valid(request $request, $id)
+    {
+        $validate = User::findorfail($id);
+        $validate->update(array('validasi' => 'valid'));
+        Alert::toast('Success Validate', 'success');
+        return redirect('cmsuser');
+    }
 
     /**
      * Remove the specified resource from storage.

@@ -35,7 +35,13 @@ Route::get('/admin', function () {
     return view('admin/loginadmin');
 });
 
+Route::get('/detailuser', function () {
+    return view('admin/detailuser');
+});
+
 Route::post('/loginuser', [UserLoginController::class,'loginuser'])->name('loginuser');
 Route::post('/regisuser', [UserAccountController::class,'regisuser'])->name('regisuser');
 Route::post('/loginadmin', [UserLoginController::class,'loginadmin'])->name('loginadmin');
 Route::get('/cmsuser', [UserAccountController::class,'listuser'])->name('cmsuser');
+Route::get('/detailuser/{id}', [UserAccountController::class,'showuser'])->name('detailuser');
+Route::get('/validate/{id}', [UserAccountController::class,'valid'])->name('validate');

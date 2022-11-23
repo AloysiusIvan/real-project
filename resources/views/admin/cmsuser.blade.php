@@ -25,6 +25,7 @@
         }
     </style>
     <body>
+        @include('sweetalert::alert')
         <div id="app">
             <nav id="navbar-main" class="navbar is-fixed-top">
                 <div class="navbar-brand">
@@ -59,7 +60,7 @@
                     <div class="aside-tools-label">
                         <span>
                             <b>Admin</b>
-                            One HTML</span>
+                            Visit Techno</span>
                     </div>
                 </div>
                 <div class="menu is-menu-main">
@@ -231,19 +232,13 @@
                                             <td data-label="Created">{{$item->created_at->format('d M, Y')}}</td>
                                             <td class="is-actions-cell">
                                                 <div class="buttons is-right">
-                                                    <button class="button is-small is-primary" type="button">
-                                                        <span class="icon">
-                                                            <i class="mdi mdi-eye"></i>
-                                                        </span>
-                                                    </button>
-                                                    <button
-                                                        class="button is-small is-danger jb-modal"
-                                                        data-target="sample-modal"
-                                                        type="button">
-                                                        <span class="icon">
-                                                            <i class="mdi mdi-trash-can"></i>
-                                                        </span>
-                                                    </button>
+                                                    <a href="{{route('detailuser',$item->id)}}">
+                                                        <button class="button is-small is-primary" type="button">
+                                                            <span class="icon">
+                                                                <i class="mdi mdi-eye"></i>
+                                                            </span>
+                                                        </button>
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -309,7 +304,9 @@
         </div>
 
         <!-- Scripts below are for demo only -->
-        <script type="text/javascript" src="{{ URL::asset('adminsrc/js/main.min.js') }}"></script>
+        <script
+            type="text/javascript"
+            src="{{ URL::asset('adminsrc/js/main.min.js') }}"></script>
 
         <!-- Icons below are for demo only. Feel free to use any icon pack. Docs:
         https://bulma.io/documentation/elements/icon/ -->

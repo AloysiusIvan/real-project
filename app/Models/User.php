@@ -28,7 +28,8 @@ class User extends Authenticatable
         'alamat',
         'keahlian',
         'foto_ktp',
-        'password'
+        'password',
+        'validasi'
     ];
 
     /**

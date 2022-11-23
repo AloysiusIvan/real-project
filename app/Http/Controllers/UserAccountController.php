@@ -48,7 +48,8 @@ class UserAccountController extends Controller
             'alamat'=>$request->alamat,
             'keahlian'=>$request->keahlian,
             'foto_ktp'=>$request->foto_ktp,
-            'password'=>Hash::make('techno')
+            'password'=>Hash::make('techno'),
+            'validasi'=>'wait'
         ]);
         Alert::success('Data Tersimpan', 'Menunggu Validasi Admin')->showConfirmButton('OK', '#2c598d');;
         return redirect()->intended('login');

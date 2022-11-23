@@ -55,19 +55,29 @@
                     </div>
                     <div class="columns is-centered">
                         <div class="column is-6-tablet is-4-desktop box">
-                            <form action="{{route('loginuser')}}" method="post">
+                            <form action="{{route('loginadmin')}}" method="post">
                                 {{ csrf_field() }}
-                                <div class="field has-text-centered">
-                                    <p class="mb-5 is-size-5">Log In Menggunakan NIK KTP</p>
+                                <div class="field">
+                                    <label class="label">Username</label>
                                     <div class="control">
                                         <input
                                             type="text"
-                                            placeholder="NIK"
+                                            placeholder="Username"
                                             class="input"
                                             maxlength="16"
                                             required="required"
                                             name="nik">
-                                        <input id="hid" type="hidden" value="techno" name="password">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label class="label">Password</label>
+                                    <div class="control">
+                                        <input
+                                            type="password"
+                                            placeholder="Password"
+                                            class="input"
+                                            required="required"
+                                            name="password">
                                     </div>
                                 </div>
                                 <div class="field">
@@ -80,22 +90,6 @@
                                     </div>
                                 </div>
                             </form>
-                            <div class="field has-text-centered mt-3">
-                                <div class="control">
-                                    <div class="strike mb-3">
-                                        <span>
-                                            <p>Atau</p>
-                                        </span>
-                                    </div>
-                                    <a href="/register">
-                                        <button
-                                            class="button is-primary has-text-weight-bold"
-                                            style="background-color:#6ed34b;">
-                                            Registrasi
-                                        </button>
-                                    </a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -133,7 +127,7 @@
                 .classList
                 .add("is-loading");
         }
-        
+
         var swal = document.getElementsByClassName("swal2-confirm");
     </script>
 </html>

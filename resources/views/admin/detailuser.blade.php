@@ -49,7 +49,7 @@
                 </div>
                 <div class="navbar-menu fadeIn animated faster" id="navbar-menu">
                     <div class="navbar-end">
-                        <a title="Log out" class="navbar-item is-desktop-icon-only">
+                        <a href="{{route('logout')}}" title="Log out" class="navbar-item is-desktop-icon-only">
                             <span class="icon">
                                 <i class="mdi mdi-logout"></i>
                             </span>

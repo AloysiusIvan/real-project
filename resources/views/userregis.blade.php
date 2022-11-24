@@ -36,7 +36,7 @@
                                 </div>
                                 <div class="column has-text-right">
                                     <a href="/login">
-                                        <button class="button has-text-weight-bold">
+                                        <button class="button is-light has-text-weight-bold">
                                             Cancel
                                         </button>
                                     </a>
@@ -55,7 +55,8 @@
                                             minlength="16"
                                             maxlength="16"
                                             required="required"
-                                            name="nik">
+                                            name="nik"
+                                            id="intTextBox">
                                     </div>
                                 </div>
                                 <div class="field">
@@ -65,7 +66,6 @@
                                             type="text"
                                             placeholder="Nama Lengkap"
                                             class="input"
-                                            maxlength="16"
                                             required="required"
                                             name="name">
                                     </div>
@@ -88,7 +88,6 @@
                                             type="text"
                                             placeholder="No. Handphone"
                                             class="input"
-                                            maxlength="16"
                                             required="required"
                                             name="phone">
                                     </div>
@@ -100,7 +99,6 @@
                                             type="text"
                                             placeholder="Profesi"
                                             class="input"
-                                            maxlength="16"
                                             required="required"
                                             name="profesi">
                                     </div>
@@ -125,7 +123,6 @@
                                             type="text"
                                             placeholder="Nama Institusi / Komunitas / Kampus"
                                             class="input"
-                                            maxlength="16"
                                             required="required"
                                             name="nama_institusi">
                                     </div>
@@ -187,5 +184,50 @@
                 </div>
             </div>
         </section>
+        <script>
+            function setInputFilter(textbox, inputFilter, errMsg) {
+                [
+                    "input",
+                    "keydown",
+                    "keyup",
+                    "mousedown",
+                    "mouseup",
+                    "select",
+                    "contextmenu",
+                    "drop",
+                    "focusout"
+                ].forEach(function (event) {
+                    textbox.addEventListener(event, function (e) {
+                        if (inputFilter(this.value)) {
+                            // Accepted value
+                            if (["keydown", "mousedown", "focusout"].indexOf(e.type) >= 0) {
+                                this
+                                    .classList
+                                    .remove("input-error");
+                                this.setCustomValidity("");
+                            }
+                            this.oldValue = this.value;
+                            this.oldSelectionStart = this.selectionStart;
+                            this.oldSelectionEnd = this.selectionEnd;
+                        } else if (this.hasOwnProperty("oldValue")) {
+                            // Rejected value - restore the previous one
+                            this
+                                .classList
+                                .add("input-error");
+                            this.setCustomValidity(errMsg);
+                            this.reportValidity();
+                            this.value = this.oldValue;
+                            this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                        } else {
+                            // Rejected value - nothing to restore
+                            this.value = "";
+                        }
+                    });
+                });
+            }
+            setInputFilter(document.getElementById("intTextBox"), function (value) {
+                return /^-?\d*$/.test(value);
+            }, "Masukan NIK yang benar");
+        </script>
     </body>
 </html>

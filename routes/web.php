@@ -15,33 +15,35 @@ use App\Http\Controllers\UserAccountController;
 |
 */
 
+/* Public */
 Route::get('/', function () {
     return view('landingpage');
 });
-
-Route::get('/login', function () {
+Route::get('/login',array('as'=>'login',function() {
     return view('login2');
-});
-
-Route::get('/book', function () {
-    return view('book');
-});
-
-Route::get('/register', function () {
-    return view('userregis');
-});
-
+}
+));
 Route::get('/admin', function () {
     return view('admin/loginadmin');
 });
+Route::get('/register', function () {
+    return view('userregis');
+});
+Route::post('/loginuser', [UserLoginController::class,'loginuser'])->name('loginuser');
+Route::post('/loginadmin', [UserLoginController::class,'loginadmin'])->name('loginadmin');
+Route::post('/regisuser', [UserAccountController::class,'regisuser'])->name('regisuser');
+Route::get('/logout', [UserLoginController::class,'logout'])->name('logout');
 
-Route::get('/detailuser', function () {
-    return view('admin/detailuser');
+/* User */
+Route::middleware(['user'])->group(function () {
+    Route::get('/book', function () {
+        return view('book');
+    });
 });
 
-Route::post('/loginuser', [UserLoginController::class,'loginuser'])->name('loginuser');
-Route::post('/regisuser', [UserAccountController::class,'regisuser'])->name('regisuser');
-Route::post('/loginadmin', [UserLoginController::class,'loginadmin'])->name('loginadmin');
-Route::get('/cmsuser', [UserAccountController::class,'listuser'])->name('cmsuser');
-Route::get('/detailuser/{id}', [UserAccountController::class,'showuser'])->name('detailuser');
-Route::get('/validate/{id}', [UserAccountController::class,'valid'])->name('validate');
+/* Admin */
+Route::middleware(['admin'])->group(function () {
+    Route::get('/cmsuser', [UserAccountController::class,'listuser'])->name('cmsuser');
+    Route::get('/detailuser/{id}', [UserAccountController::class,'showuser'])->name('detailuser');
+    Route::get('/validate/{id}', [UserAccountController::class,'valid'])->name('validate');
+});

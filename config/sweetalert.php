@@ -69,7 +69,7 @@ return [
     | for particular modal just use the width() helper method.
     */
 
-    'width' => env('SWEET_ALERT_WIDTH', '20rem'),
+    'width' => env('SWEET_ALERT_WIDTH', '26rem'),
 
     /*
     |--------------------------------------------------------------------------

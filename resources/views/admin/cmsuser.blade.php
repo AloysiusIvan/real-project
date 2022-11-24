@@ -46,7 +46,7 @@
                 </div>
                 <div class="navbar-menu fadeIn animated faster" id="navbar-menu">
                     <div class="navbar-end">
-                        <a title="Log out" class="navbar-item is-desktop-icon-only">
+                        <a href="{{route('logout')}}" title="Log out" class="navbar-item is-desktop-icon-only">
                             <span class="icon">
                                 <i class="mdi mdi-logout"></i>
                             </span>
@@ -66,7 +66,7 @@
                 <div class="menu is-menu-main">
                     <ul class="menu-list">
                         <li>
-                            <a href="index.html" class="has-icon">
+                            <a href="" class="has-icon">
                                 <span class="icon">
                                     <i class="mdi mdi-desktop-mac"></i>
                                 </span>
@@ -81,70 +81,6 @@
                                     <i class="mdi mdi-account-circle"></i>
                                 </span>
                                 <span class="menu-item-label">User Management</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="forms.html" class="has-icon">
-                                <span class="icon">
-                                    <i class="mdi mdi-square-edit-outline"></i>
-                                </span>
-                                <span class="menu-item-label">Room Management</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="profile.html" class="has-icon">
-                                <span class="icon">
-                                    <i class="mdi mdi-account-circle"></i>
-                                </span>
-                                <span class="menu-item-label">History</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="has-icon has-dropdown-icon">
-                                <span class="icon">
-                                    <i class="mdi mdi-view-list"></i>
-                                </span>
-                                <span class="menu-item-label">Submenus</span>
-                                <div class="dropdown-icon">
-                                    <span class="icon">
-                                        <i class="mdi mdi-plus"></i>
-                                    </span>
-                                </div>
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href="#void">
-                                        <span>Sub-item One</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#void">
-                                        <span>Sub-item Two</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <ul class="menu-list">
-                        <li>
-                            <a
-                                href="https://github.com/vikdiesel/admin-one-bulma-dashboard"
-                                target="_blank"
-                                class="has-icon">
-                                <span class="icon">
-                                    <i class="mdi mdi-github-circle"></i>
-                                </span>
-                                <span class="menu-item-label">GitHub</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="https://justboil.me/bulma-admin-template/free-html-dashboard/"
-                                class="has-icon">
-                                <span class="icon">
-                                    <i class="mdi mdi-help-circle"></i>
-                                </span>
-                                <span class="menu-item-label">About</span>
                             </a>
                         </li>
                     </ul>
@@ -195,7 +131,7 @@
                                     <span class="icon is-small">
                                         <i class="mdi mdi-close-circle" aria-hidden="true"></i>
                                     </span>
-                                    <span>Not Valid</span>
+                                    <span>Inactive</span>
                                 </a>
                             </li>
                             <li>
@@ -203,7 +139,7 @@
                                     <span class="icon is-small">
                                         <i class="mdi mdi-check-circle" aria-hidden="true"></i>
                                     </span>
-                                    <span>Valid</span>
+                                    <span>Active</span>
                                 </a>
                             </li>
                         </ul>

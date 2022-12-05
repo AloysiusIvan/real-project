@@ -33,6 +33,7 @@ Route::post('/loginuser', [UserLoginController::class,'loginuser'])->name('login
 Route::post('/loginadmin', [UserLoginController::class,'loginadmin'])->name('loginadmin');
 Route::post('/regisuser', [UserAccountController::class,'regisuser'])->name('regisuser');
 Route::get('/logout', [UserLoginController::class,'logout'])->name('logout');
+Route::post('/edituser/{id}', [UserAccountController::class,'edituser'])->name('edituser');
 
 /* User */
 Route::middleware(['user'])->group(function () {
@@ -46,4 +47,10 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/cmsuser', [UserAccountController::class,'listuser'])->name('cmsuser');
     Route::get('/detailuser/{id}', [UserAccountController::class,'showuser'])->name('detailuser');
     Route::get('/validate/{id}', [UserAccountController::class,'valid'])->name('validate');
+    Route::get('/reject/{id}', [UserAccountController::class,'reject'])->name('reject');
+});
+
+/* User Inactive */
+Route::middleware(['userreject'])->group(function () {
+    Route::get('/updatesuser/{id}', [UserAccountController::class,'updateuser'])->name('updateuser');
 });

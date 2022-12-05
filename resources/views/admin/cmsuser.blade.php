@@ -17,11 +17,30 @@
             href="https://fonts.googleapis.com/css?family=Nunito"
             rel="stylesheet"
             type="text/css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     </head>
     <style>
         .tabs li.is-active a {
             border-bottom-color: #2c598d;
             color: #2c598d;
+        }
+
+        @media all and (min-width:1024px) {
+            td {
+                max-width: 344px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+        @media all and (max-width:1024px) {
+            table {table-layout: fixed; width: 378;}
+            td {
+                max-width: 378;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
         }
     </style>
     <body>
@@ -46,7 +65,10 @@
                 </div>
                 <div class="navbar-menu fadeIn animated faster" id="navbar-menu">
                     <div class="navbar-end">
-                        <a href="{{route('logout')}}" title="Log out" class="navbar-item is-desktop-icon-only">
+                        <a
+                            href="{{route('logout')}}"
+                            title="Log out"
+                            class="navbar-item is-desktop-icon-only">
                             <span class="icon">
                                 <i class="mdi mdi-logout"></i>
                             </span>
@@ -118,24 +140,24 @@
                 <div class="card has-table">
                     <div class="tabs is-boxed mb-0">
                         <ul>
-                            <li class="is-active">
-                                <a>
+                            <li id="waiting" class="is-active">
+                                <a onclick="switchToWaiting()">
                                     <span class="icon is-small">
                                         <i class="mdi mdi-clock" aria-hidden="true"></i>
                                     </span>
                                     <span>Waiting</span>
                                 </a>
                             </li>
-                            <li>
-                                <a>
+                            <li id="inactive">
+                                <a onclick="switchToInactive()">
                                     <span class="icon is-small">
                                         <i class="mdi mdi-close-circle" aria-hidden="true"></i>
                                     </span>
                                     <span>Inactive</span>
                                 </a>
                             </li>
-                            <li>
-                                <a>
+                            <li id="active">
+                                <a onclick="switchToActive()">
                                     <span class="icon is-small">
                                         <i class="mdi mdi-check-circle" aria-hidden="true"></i>
                                     </span>
@@ -158,17 +180,61 @@
                                             <th></th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="waiting-tab-content">
                                         @foreach ($user as $item)
                                         <tr>
-                                            <td data-label="Name">{{$item->nik}}</td>
-                                            <td data-label="Company">{{$item->name}}</td>
-                                            <td data-label="City">{{$item->profesi}}</td>
-                                            <td data-label="Progress">{{$item->nama_institusi}}</td>
+                                            <td data-label="NIK">{{$item->nik}}</td>
+                                            <td data-label="Name">{{$item->name}}</td>
+                                            <td data-label="Profesi">{{$item->profesi}}</td>
+                                            <td data-label="nama Institusi">{{$item->nama_institusi}}</td>
                                             <td data-label="Created">{{$item->created_at->format('d M, Y')}}</td>
                                             <td class="is-actions-cell">
                                                 <div class="buttons is-right">
                                                     <a href="{{route('detailuser',$item->id)}}">
+                                                        <button class="button is-small is-primary" type="button">
+                                                            <span class="icon">
+                                                                <i class="mdi mdi-eye"></i>
+                                                            </span>
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tbody class="is-hidden" id="inactive-tab-content">
+                                        @foreach ($userinac as $item2)
+                                        <tr>
+                                            <td data-label="NIK">{{$item2->nik}}</td>
+                                            <td data-label="Name">{{$item2->name}}</td>
+                                            <td data-label="Profesi">{{$item2->profesi}}</td>
+                                            <td data-label="nama Institusi">{{$item2->nama_institusi}}</td>
+                                            <td data-label="Created">{{$item2->created_at->format('d M, Y')}}</td>
+                                            <td class="is-actions-cell">
+                                                <div class="buttons is-right">
+                                                    <a href="{{route('detailuser',$item2->id)}}">
+                                                        <button class="button is-small is-primary" type="button">
+                                                            <span class="icon">
+                                                                <i class="mdi mdi-eye"></i>
+                                                            </span>
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tbody class="is-hidden" id="active-tab-content">
+                                        @foreach ($userac as $item3)
+                                        <tr>
+                                            <td data-label="NIK">{{$item3->nik}}</td>
+                                            <td data-label="Name">{{$item3->name}}</td>
+                                            <td data-label="Profesi">{{$item3->profesi}}</td>
+                                            <td data-label="nama Institusi">{{$item3->nama_institusi}}</td>
+                                            <td data-label="Created">{{$item3->created_at->format('d M, Y')}}</td>
+                                            <td class="is-actions-cell">
+                                                <div class="buttons is-right">
+                                                    <a href="{{route('detailuser',$item3->id)}}">
                                                         <button class="button is-small is-primary" type="button">
                                                             <span class="icon">
                                                                 <i class="mdi mdi-eye"></i>
@@ -249,5 +315,39 @@
         <link
             rel="stylesheet"
             href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
+        <script>
+            function removeActive() {
+                $("li").each(function () {
+                    $(this).removeClass("is-active");
+                });
+            }
+
+            function hideAll() {
+                $("#waiting-tab-content").addClass("is-hidden");
+                $("#inactive-tab-content").addClass("is-hidden");
+                $("#active-tab-content").addClass("is-hidden");
+            }
+
+            function switchToInactive() {
+                removeActive();
+                hideAll();
+                $("#inactive").addClass("is-active");
+                $("#inactive-tab-content").removeClass("is-hidden");
+            }
+
+            function switchToWaiting() {
+                removeActive();
+                hideAll();
+                $("#waiting").addClass("is-active");
+                $("#waiting-tab-content").removeClass("is-hidden");
+            }
+
+            function switchToActive() {
+                removeActive();
+                hideAll();
+                $("#active").addClass("is-active");
+                $("#active-tab-content").removeClass("is-hidden");
+            }
+        </script>
     </body>
 </html>

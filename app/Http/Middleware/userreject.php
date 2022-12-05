@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Auth;
 
-class user
+class userreject
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class user
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::user() &&  Auth::user()->validasi != "admin" && Auth::user()->validasi == "valid") {
+        if (Auth::user() && Auth::user()->validasi != "admin" && Auth::user()->validasi == "reject") {
              return $next($request);
         }
 

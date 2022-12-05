@@ -5,21 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use App\Models\User;
 
 class UserLoginController extends Controller
 {
     public function loginuser(Request $request)
     {
         $credentials = $request->only('nik','password');
+        $iduser = User::where('nik', $request->nik)->get('id');
  
         if (Auth::attempt($credentials) && Auth::user()->validasi == "valid") {
             return redirect()->intended('book');
         }elseif (Auth::attempt($credentials) && Auth::user()->validasi == "wait"){
             Alert::info('Proses Validasi', 'Menunggu Validasi Admin')->showConfirmButton('OK', '#2c598d');
             return redirect()->intended('login');
-        }elseif (Auth::attempt($credentials) && Auth::user()->validasi == "notvalid"){
-            Alert::warning('Data Tidak Valid', 'Silahkan melengkapi data anda')->showConfirmButton('OK', '#2c598d');
-            return redirect()->intended('login');
+        }elseif (Auth::attempt($credentials) && Auth::user()->validasi == "reject"){
+            Alert::warning('Data Tidak Valid', 'Silahkan melengkapi data anda')->showConfirmButton('Yes', '#2c598d')->showCancelButton('Cancel');
+            return view('login', compact('iduser'));
         }else{
             Alert::error('NIK Belum Terdaftar', 'Silahkan Registrasi')->showConfirmButton('OK', '#2c598d');
             return redirect()->intended('login');

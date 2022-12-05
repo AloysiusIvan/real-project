@@ -49,7 +49,10 @@
                 </div>
                 <div class="navbar-menu fadeIn animated faster" id="navbar-menu">
                     <div class="navbar-end">
-                        <a href="{{route('logout')}}" title="Log out" class="navbar-item is-desktop-icon-only">
+                        <a
+                            href="{{route('logout')}}"
+                            title="Log out"
+                            class="navbar-item is-desktop-icon-only">
                             <span class="icon">
                                 <i class="mdi mdi-logout"></i>
                             </span>
@@ -84,70 +87,6 @@
                                     <i class="mdi mdi-account-circle"></i>
                                 </span>
                                 <span class="menu-item-label">User Management</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="forms.html" class="has-icon">
-                                <span class="icon">
-                                    <i class="mdi mdi-square-edit-outline"></i>
-                                </span>
-                                <span class="menu-item-label">Room Management</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="profile.html" class="has-icon">
-                                <span class="icon">
-                                    <i class="mdi mdi-account-circle"></i>
-                                </span>
-                                <span class="menu-item-label">History</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="has-icon has-dropdown-icon">
-                                <span class="icon">
-                                    <i class="mdi mdi-view-list"></i>
-                                </span>
-                                <span class="menu-item-label">Submenus</span>
-                                <div class="dropdown-icon">
-                                    <span class="icon">
-                                        <i class="mdi mdi-plus"></i>
-                                    </span>
-                                </div>
-                            </a>
-                            <ul>
-                                <li>
-                                    <a href="#void">
-                                        <span>Sub-item One</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#void">
-                                        <span>Sub-item Two</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <ul class="menu-list">
-                        <li>
-                            <a
-                                href="https://github.com/vikdiesel/admin-one-bulma-dashboard"
-                                target="_blank"
-                                class="has-icon">
-                                <span class="icon">
-                                    <i class="mdi mdi-github-circle"></i>
-                                </span>
-                                <span class="menu-item-label">GitHub</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="https://justboil.me/bulma-admin-template/free-html-dashboard/"
-                                class="has-icon">
-                                <span class="icon">
-                                    <i class="mdi mdi-help-circle"></i>
-                                </span>
-                                <span class="menu-item-label">About</span>
                             </a>
                         </li>
                     </ul>
@@ -189,7 +128,13 @@
                             <span class="icon">
                                 <i class="mdi mdi-ballot"></i>
                             </span>
-                            Forms
+                            @if ($userdata[0]->validasi == "wait")
+                            Wait Validation
+                            @elseif ($userdata[0]->validasi == "reject")
+                            Inactive
+                            @else
+                            Active
+                            @endif
                         </p>
                         <a href="{{route('cmsuser')}}" class="card-header-icon">
                             <span class="icon">
@@ -331,7 +276,7 @@
                                                 <input
                                                     class="input"
                                                     type="text"
-                                                    value="{{$item->keahlian}}"
+                                                    value="{{str_replace(',',', ',$item->keahlian)}}"
                                                     disabled="disabled">
                                             </p>
                                         </div>
@@ -346,7 +291,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->ktp}}" disabled="disabled">
+                                                <img src="{{asset('storage/img/ktp/'.$item->foto_ktp)}}">
                                             </p>
                                         </div>
                                     </div>
@@ -357,7 +302,9 @@
                         <div class="field is-horizontal">
                             <div class="field-label">
                                 <!-- Left empty for spacing -->
+
                             </div>
+                            @if ($item->validasi=="wait")
                             <div class="field-body">
                                 <div class="field">
                                     <div class="field is-grouped">
@@ -369,14 +316,16 @@
                                             </a>
                                         </div>
                                         <div class="control">
-                                            <button type="button" class="button is-danger">
-                                                <span>Reject</span>
-                                            </button>
-                                            @endforeach
+                                            <a href="{{route('reject',$item->id)}}">
+                                                <button type="button" class="button is-danger">
+                                                    <span>Reject</span>
+                                                </button>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            @else @endif @endforeach
                         </div>
                     </div>
                 </div>

@@ -43,8 +43,9 @@
                                 </div>
                             </div>
                             <hr>
+                            @foreach($iduser as $item)
                             <form
-                                action="{{route('regisuser')}}"
+                                action="{{route('edituser', $item->id)}}"
                                 method="post"
                                 enctype="multipart/form-data"
                                 id="regis">
@@ -53,6 +54,7 @@
                                     <label class="label">NIK</label>
                                     <div class="control">
                                         <input
+                                            value="{{$item->nik}}"
                                             type="text"
                                             placeholder="NIK"
                                             class="input"
@@ -67,6 +69,7 @@
                                     <label class="label">Nama</label>
                                     <div class="control">
                                         <input
+                                            value="{{$item->name}}"
                                             type="text"
                                             placeholder="Nama Lengkap"
                                             class="input"
@@ -78,6 +81,7 @@
                                     <label class="label">Email</label>
                                     <div class="control">
                                         <input
+                                            value="{{$item->email}}"
                                             type="email"
                                             placeholder="Email"
                                             class="input"
@@ -89,6 +93,7 @@
                                     <label class="label">No. Handphone</label>
                                     <div class="control">
                                         <input
+                                            value="{{$item->phone}}"
                                             type="text"
                                             placeholder="No. Handphone"
                                             class="input"
@@ -141,8 +146,9 @@
                                     <label class="label">Nama Instansi / Komunitas / Kampus</label>
                                     <div class="control">
                                         <input
+                                            value="{{$item->nama_institusi}}"
                                             type="text"
-                                            placeholder="Pilih Nama Institusi / Komunitas / Kampus"
+                                            placeholder="Nama Instansi / Komunitas / Kampus"
                                             class="input"
                                             required="required"
                                             name="nama_institusi">
@@ -155,9 +161,10 @@
                                             class="textarea"
                                             placeholder="Alamat"
                                             name="alamat"
-                                            required="required"></textarea>
+                                            required="required">{{$item->alamat}}</textarea>
                                     </div>
                                 </div>
+                                @endforeach
                                 <div class="field checkbox-group required">
                                     <label class="label">Keahlian</label>
                                     <div class="control">

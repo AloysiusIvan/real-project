@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserLoginController;
 use App\Http\Controllers\UserAccountController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\BookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,9 +39,13 @@ Route::post('/edituser/{id}', [UserAccountController::class,'edituser'])->name('
 
 /* User */
 Route::middleware(['user'])->group(function () {
-    Route::get('/book', function () {
+    Route::get('/home', function () {
         return view('book');
     });
+    Route::get('/history', [BookingController::class,'history'])->name('history');
+    Route::get('/book', [BookingController::class,'index'])->name('book');
+    Route::get('/book/search', [BookingController::class,'search'])->name('search');
+    Route::get('/booking', [BookingController::class,'booking'])->name('booking');
 });
 
 /* Admin */
@@ -48,9 +54,12 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/detailuser/{id}', [UserAccountController::class,'showuser'])->name('detailuser');
     Route::get('/validate/{id}', [UserAccountController::class,'valid'])->name('validate');
     Route::get('/reject/{id}', [UserAccountController::class,'reject'])->name('reject');
+    Route::get('/cmsroom', [RoomController::class,'listroom'])->name('cmsroom');
+    Route::post('/addroom', [RoomController::class,'addroom'])->name('addroom');
+    Route::get('/editroom/{id}', [RoomController::class,'showroom'])->name('editroom');
+    Route::post('/updateroom/{id}', [RoomController::class,'updateroom'])->name('updateroom');
+    Route::get('/deleteroom/{id}', [RoomController::class,'deleteroom'])->name('deleteroom');
 });
 
 /* User Inactive */
-Route::middleware(['userreject'])->group(function () {
-    Route::get('/updatesuser/{id}', [UserAccountController::class,'updateuser'])->name('updateuser');
-});
+Route::get('/updatesuser/{id}', [UserAccountController::class,'updateuser'])->name('updateuser');

@@ -66,7 +66,7 @@
                             <button
                                 id="primarytechno"
                                 class="button is-primary has-text-weight-bold is-fullwidth"
-                                href="/login">BOOK NOW</button>
+                                href="/login">RESERVASI SEKARANG</button>
                         </a>
                     </div>
                 </div>

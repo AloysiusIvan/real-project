@@ -90,6 +90,16 @@
                             </a>
                         </li>
                     </ul>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="/cmsroom" class="has-icon">
+                                <span class="icon">
+                                    <i class="mdi mdi-home-circle"></i>
+                                </span>
+                                <span class="menu-item-label">Room Management</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </aside>
             <section class="section is-title-bar">
@@ -136,7 +146,7 @@
                             Active
                             @endif
                         </p>
-                        <a href="{{route('cmsuser')}}" class="card-header-icon">
+                        <a href="javascript:history.back()" class="card-header-icon">
                             <span class="icon">
                                 <i class="mdi mdi-close-box"></i>
                             </span>

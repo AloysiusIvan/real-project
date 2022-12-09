@@ -27,7 +27,7 @@
 
         @media all and (min-width:1024px) {
             td {
-                max-width: 344px;
+                max-width: 208px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -106,6 +106,16 @@
                             </a>
                         </li>
                     </ul>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="/cmsroom" class="has-icon">
+                                <span class="icon">
+                                    <i class="mdi mdi-home-circle"></i>
+                                </span>
+                                <span class="menu-item-label">Room Management</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </aside>
             <section class="section is-title-bar">
@@ -141,7 +151,7 @@
                     <div class="tabs is-boxed mb-0">
                         <ul>
                             <li id="waiting" class="is-active">
-                                <a onclick="switchToWaiting()">
+                                <a href="#waiting" onclick="switchToWaiting()">
                                     <span class="icon is-small">
                                         <i class="mdi mdi-clock" aria-hidden="true"></i>
                                     </span>
@@ -149,7 +159,7 @@
                                 </a>
                             </li>
                             <li id="inactive">
-                                <a onclick="switchToInactive()">
+                                <a href="#inactive" onclick="switchToInactive()">
                                     <span class="icon is-small">
                                         <i class="mdi mdi-close-circle" aria-hidden="true"></i>
                                     </span>
@@ -157,7 +167,7 @@
                                 </a>
                             </li>
                             <li id="active">
-                                <a onclick="switchToActive()">
+                                <a href="#active" onclick="switchToActive()">
                                     <span class="icon is-small">
                                         <i class="mdi mdi-check-circle" aria-hidden="true"></i>
                                     </span>
@@ -173,10 +183,10 @@
                                     <thead>
                                         <tr>
                                             <th>NIK</th>
-                                            <th>Name</th>
-                                            <th>Profesi</th>
+                                            <th>Nama</th>
+                                            <th>Pekerjaan</th>
                                             <th>Nama Institusi</th>
-                                            <th>Created</th>
+                                            <th>Tanggal</th>
                                             <th></th>
                                         </tr>
                                     </thead>

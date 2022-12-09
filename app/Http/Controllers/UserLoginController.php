@@ -15,12 +15,12 @@ class UserLoginController extends Controller
         $iduser = User::where('nik', $request->nik)->get('id');
  
         if (Auth::attempt($credentials) && Auth::user()->validasi == "valid") {
-            return redirect()->intended('book');
+            return redirect()->intended('home');
         }elseif (Auth::attempt($credentials) && Auth::user()->validasi == "wait"){
             Alert::info('Proses Validasi', 'Menunggu Validasi Admin')->showConfirmButton('OK', '#2c598d');
             return redirect()->intended('login');
         }elseif (Auth::attempt($credentials) && Auth::user()->validasi == "reject"){
-            Alert::warning('Data Tidak Valid', 'Silahkan melengkapi data anda')->showConfirmButton('Yes', '#2c598d')->showCancelButton('Cancel');
+            Alert::warning('Data Tidak Valid', 'Silahkan melakukan registrasi kembali')->showConfirmButton('Registrasi', '#2c598d')->showCancelButton('Cancel');
             return view('login', compact('iduser'));
         }else{
             Alert::error('NIK Belum Terdaftar', 'Silahkan Registrasi')->showConfirmButton('OK', '#2c598d');
@@ -41,12 +41,16 @@ class UserLoginController extends Controller
     }
 
     public function logout(Request $request){
-        Auth::logout();
-    
-        $request->session()->invalidate();
-    
-        $request->session()->regenerateToken();
-    
-        return redirect('/login');
+        if (Auth::user()->validasi == "admin"){
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect('/admin');
+        } else {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect('/login');
+        }
     }
 }

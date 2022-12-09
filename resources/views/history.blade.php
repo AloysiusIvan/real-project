@@ -3,6 +3,7 @@
     <head>
         @include('head')
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link
             rel="preconnect"
@@ -28,9 +29,13 @@
                 padding-left: 4.725rem;
                 padding-right: 4.725rem;
             }
-            body {
-                height: 100vh;
-                background: linear-gradient(to top, #f0f2f5 0%, #f0f2f5 31%, #2c598d 31%, #2c598d 100%);
+            html {
+                background-color: #f0f2f5;
+            }
+            .bg-color {
+                background-color: #2c598d;
+                height: 31.125rem;
+                width: 100vw;
             }
             .mawe {
                 margin-left: 9.875rem;
@@ -47,14 +52,16 @@
                 padding-right: 0.75rem;
             }
             body {
-                height: 100vh;
-                background: linear-gradient(to top, #f0f2f5 0%, #f0f2f5 47%, #2c598d 47%, #2c598d 100%);
+                background-color: linear-gradient(to top, #f0f2f5 0%, #f0f2f5 47%, #2c598d 47%, #2c598d 100%);
             }
             .mawe {
                 margin-top: 5.875rem;
             }
             .mabo {
                 margin-top: 5rem;
+            }
+            th {
+                display: block;
             }
         }
         #primarytechno {
@@ -74,51 +81,41 @@
             border-color: #d9dde3;
         }
     </style>
-    <body>
+    <body class="bg-color">
         @include('nav')
         <div class="container pad-mob">
             <div class="columns">
                 <div class="column mawe">
-                    <h1 id="nu" class="title is-4">Selamat Datang,
-                        {{auth()->user()->name}}</h1>
+                    <h1 id="nu" class="title is-4">History Booking Working Space</h1>
                 </div>
             </div>
             <div class="columns is-centered pad-mob">
                 <div class="column is-6-tablet is-9-desktop box mabo">
-                    <div class="columns">
-                        <div class="column itemhome">
-                            <div class="columns">
-                                <div class="column has-text-center">
-                                    <p class="is-size-4">
-                                        Booking Working Space
-                                    </p>
-                                </div>
-                                <div class="column has-text-right">
-                                    <a href="/book">
-                                        <button id="primarytechno" class="button is-primary has-text-weight-bold">
-                                            Reservasi
-                                        </button>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="columns">
-                        <div class="column itemhome">
-                            <div class="columns">
-                                <div class="column has-text-center">
-                                    <p class="is-size-4">
-                                        History Booking
-                                    </p>
-                                </div>
-                                <div class="column has-text-right">
-                                    <button id="primarytechno" class="button is-primary has-text-weight-bold">
-                                        History
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <table class="table is-fullwidth is-hoverable is-striped">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Ruangan</th>
+                                <th>Tanggal Booking</th>
+                                <th>Keperluan</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($history as $data)
+                            <tr>
+                                <td>1</td>
+                                <td>{{$data->room_name}}</td>
+                                <td>{{$data->tanggal->format('D, d M Y')}}</td>
+                                <td>{{$data->keperluan}}</td>
+                                <td style="max-width:4.5rem">
+                                    <span class="but button is-primary is-small">Detail</span>
+                                    <span class="button is-danger is-small">Batalkan</span>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -130,6 +127,12 @@
                 $(".navbar-menu").toggleClass("is-active");
 
             });
+        });
+
+        $(".but").click(function () {
+            Swal.fire(
+                {title: 'Haiii', text: 'Kode booking anda adalah : ', icon: 'info', confirmButtonColor: '#2c598d'}
+            )
         });
     </script>
 </html>

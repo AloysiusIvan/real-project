@@ -128,8 +128,8 @@
                                     <div class="control">
                                         <div class="select is-fullwidth">
                                             <select name="institusi" required="required">
-                                                <option value="" selected="selected" disabled="disabled" hidden="hidden">Pilih Institusi</option>
-                                                <option value="Institusi / Perusahaan">Institusi / Perusahaan</option>
+                                                <option value="" selected="selected" disabled="disabled" hidden="hidden">Pilih Instansi</option>
+                                                <option value="Institusi / Perusahaan">Instansi / Perusahaan</option>
                                                 <option value="Sekolah / Kampus">Sekolah / Kampus</option>
                                                 <option value="Komunitas / Organisasi">Komunitas / Organisasi</option>
                                                 <option value="Lembaga">Lembaga</option>
@@ -142,7 +142,7 @@
                                     <div class="control">
                                         <input
                                             type="text"
-                                            placeholder="Pilih Nama Institusi / Komunitas / Kampus"
+                                            placeholder="Nama Instansi / Komunitas / Kampus"
                                             class="input"
                                             required="required"
                                             name="nama_institusi">

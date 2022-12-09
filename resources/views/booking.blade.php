@@ -28,9 +28,13 @@
                 padding-left: 4.725rem;
                 padding-right: 4.725rem;
             }
-            body {
-                height: 100vh;
-                background: linear-gradient(to top, #f0f2f5 0%, #f0f2f5 31%, #2c598d 31%, #2c598d 100%);
+            .bg-color {
+                background-color: #2c598d;
+                height: 31.125rem;
+                width: 100vw;
+            }
+            html {
+                background-color: #f0f2f5;
             }
             .mawe {
                 margin-left: 9.875rem;
@@ -40,6 +44,9 @@
             .mabo {
                 margin-top: 4.875rem;
             }
+            .inre {
+                width: 50%;
+            }
         }
         @media all and (max-width:1023px) {
             .pad-mob {
@@ -47,7 +54,6 @@
                 padding-right: 0.75rem;
             }
             body {
-                height: 100vh;
                 background: linear-gradient(to top, #f0f2f5 0%, #f0f2f5 47%, #2c598d 47%, #2c598d 100%);
             }
             .mawe {
@@ -74,51 +80,54 @@
             border-color: #d9dde3;
         }
     </style>
-    <body>
+    <body class="bg-color">
         @include('nav')
         <div class="container pad-mob">
             <div class="columns">
                 <div class="column mawe">
-                    <h1 id="nu" class="title is-4">Selamat Datang,
-                        {{auth()->user()->name}}</h1>
+                    <h1 id="nu" class="title is-4">Pilih tanggal dan isi keperluan</h1>
                 </div>
             </div>
             <div class="columns is-centered pad-mob">
                 <div class="column is-6-tablet is-9-desktop box mabo">
-                    <div class="columns">
-                        <div class="column itemhome">
-                            <div class="columns">
-                                <div class="column has-text-center">
-                                    <p class="is-size-4">
-                                        Booking Working Space
+                    <form action="{{route('search')}}" method="get">
+                        <div class="field">
+                            <label class="label">Keperluan</label>
+                            <div class="control">
+                                <input
+                                    id="keperluan"
+                                    type="text"
+                                    class="input inre"
+                                    required="required"
+                                    name="keperluan">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Tanggal Berkunjung</label>
+                            <div class="field-body">
+                                <div class="field">
+                                    <p class="control">
+                                        <input
+                                            placeholder="Pilih Tanggal"
+                                            id="tgl"
+                                            name="tgl"
+                                            class="input"
+                                            type="date"
+                                            required="required">
                                     </p>
                                 </div>
-                                <div class="column has-text-right">
-                                    <a href="/book">
-                                        <button id="primarytechno" class="button is-primary has-text-weight-bold">
-                                            Reservasi
+                                <div class="field">
+                                    <p class="control">
+                                        <button
+                                            id="primarytechno"
+                                            class="button is-primary has-text-weight-bold is-fullwidth">
+                                            Cari Working Space
                                         </button>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="columns">
-                        <div class="column itemhome">
-                            <div class="columns">
-                                <div class="column has-text-center">
-                                    <p class="is-size-4">
-                                        History Booking
                                     </p>
                                 </div>
-                                <div class="column has-text-right">
-                                    <button id="primarytechno" class="button is-primary has-text-weight-bold">
-                                        History
-                                    </button>
-                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

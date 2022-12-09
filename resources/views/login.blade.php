@@ -152,7 +152,7 @@
         }
 
         var swal = document.getElementsByClassName("swal2-confirm");
-        if (swal[0].innerHTML == "Yes") {
+        if (swal[0].innerHTML == "Registrasi") {
             swal[0].setAttribute('onclick', 'swalfunc()');
             function swalfunc() {
                 location.href = "{{route('updateuser',$iduser[0]->id)}}";

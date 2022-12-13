@@ -41,22 +41,38 @@ class BookingController extends Controller
     public function booking(Request $request)
     {
         $dahbooking = Booking::where('id_user',auth()->user()->id)->where('tanggal',$request->tgl)->count();
+        $mincap = Capacity::where('id_room',$request->id_room)->where('tanggal',$request->tgl)->count();
         $capas = DB::table('mst_room')->where('id',$request->id_room)->value('kapasitas');
         $cap = $capas-1;
         if ($dahbooking == 0){
-            $kode_booking = "VT".auth()->user()->id.$request->id_room.str_replace("-", "", $request->tgl);
-            Booking::create([
-                'id_user'=>auth()->user()->id,
-                'id_room'=>$request->id_room,
-                'tanggal'=>$request->tgl,
-                'keperluan'=>$request->keperluan,
-                'kode_booking'=>$kode_booking,
-            ]);
-            Capacity::create([
-                'id_room' => $request->id_room,
-                'tanggal' => $request->tgl,
-                'kapasitas' => $cap
-            ]);
+            if ($mincap == 0){
+                $kode_booking = "VT".auth()->user()->id.$request->id_room.str_replace("-", "", $request->tgl);
+                Booking::create([
+                    'id_user'=>auth()->user()->id,
+                    'id_room'=>$request->id_room,
+                    'tanggal'=>$request->tgl,
+                    'keperluan'=>$request->keperluan,
+                    'kode_booking'=>$kode_booking,
+                ]);
+                Capacity::create([
+                    'id_room' => $request->id_room,
+                    'tanggal' => $request->tgl,
+                    'kapasitas' => $cap
+                ]);
+            } else {
+                $sisa = DB::table('tmp_room_capacity')->where('id_room',$request->id_room)->where('tanggal',$request->tgl)
+                    ->value('kapasitas');
+                $kode_booking = "VT".auth()->user()->id.$request->id_room.str_replace("-", "", $request->tgl);
+                Booking::create([
+                    'id_user'=>auth()->user()->id,
+                    'id_room'=>$request->id_room,
+                    'tanggal'=>$request->tgl,
+                    'keperluan'=>$request->keperluan,
+                    'kode_booking'=>$kode_booking,
+                ]);
+                DB::table('tmp_room_capacity')->where('id_room',$request->id_room)->where('tanggal',$request->tgl)
+                    ->update(array('kapasitas' => $sisa-1));
+            }
             return $kode_booking;
         } else {
             return 'fail'; 
@@ -92,6 +108,14 @@ class BookingController extends Controller
         $history = Booking::join('mst_room','trn_booking.id_room','mst_room.id')->where('id_user',auth()->user()->id)
             ->select('trn_booking.*','mst_room.room_name')->get();
         return view('history',compact('history'));
+    }
+
+    public function bookinglist()
+    {
+        $bookinglist = Booking::join('users','trn_booking.id_user','users.id')
+            ->join('mst_room','trn_booking.id_room','mst_room.id')
+            ->select('trn_booking.*','users.name','mst_room.room_name')->get();
+        return view('admin/bookinglist',compact('bookinglist'));
     }
 
     /**

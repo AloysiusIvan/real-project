@@ -18,6 +18,7 @@
             rel="stylesheet"
             type="text/css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <style>
         .tabs li.is-active a {
@@ -44,6 +45,30 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
             }
+        }
+        @keyframes modal-show {
+            0% {
+                transform: scale(0.7);
+            }
+            45% {
+                transform: scale(1.05);
+            }
+            80% {
+                transform: scale(0.95);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .modal-card {
+            animation-name: modal-show;
+            animation-duration: 0.3s;
+        }
+        .button.is-primary {
+            background-color: #2c598d;
+        }
+        .button.is-primary:hover {
+            background-color: #234771;
         }
     </style>
     <body>
@@ -116,6 +141,16 @@
                                     <i class="mdi mdi-home-circle"></i>
                                 </span>
                                 <span class="menu-item-label">Room Management</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="/bookinglist" class="has-icon">
+                                <span class="icon">
+                                    <i class="mdi mdi-view-list"></i>
+                                </span>
+                                <span class="menu-item-label">Booking List</span>
                             </a>
                         </li>
                     </ul>
@@ -218,14 +253,24 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <?php 
+                                $total = $room->total();
+                                $page = $room->perPage();
+                                $current = $room->currentPage();
+                                $totalpage = ceil($total / $page);
+                            ?>
                             <div class="notification">
                                 <div class="level">
                                     <div class="level-left">
                                         <div class="level-item">
                                             <div class="buttons has-addons">
-                                                <button type="button" class="button is-active">1</button>
-                                                <button type="button" class="button">2</button>
-                                                <button type="button" class="button">3</button>
+                                                @for($i=1 ; $i <= $totalpage ; $i++)
+                                                @if ($i == $current)
+                                                <a style="text-decoration:none" href="{{$room->url($i)}}"><button type="button" class="button is-active">{{$i}}</button></a>
+                                                @else
+                                                <a style="text-decoration:none" href="{{$room->url($i)}}"><button type="button" class="button">{{$i}}</button></a>
+                                                @endif
+                                                @endfor
                                             </div>
                                         </div>
                                     </div>
@@ -292,6 +337,7 @@
                                     <label class="file-label">
                                         <input
                                             id="roomphoto"
+                                            accept="image/*"
                                             class="file-input"
                                             type="file"
                                             name="room_photo"
@@ -357,14 +403,31 @@
                         },
                         "Masukan kapasitas yang sesuai"
                     );
+                    $(".file-input").change(function () {
+                        var fileExtension = ['jpeg', 'jpg', 'png'];
+                        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                            Swal.fire(
+                                {title: 'Tolong upload file gambar', icon: 'error', confirmButtonColor: '#2c598d'}
+                            );
+                            $("#roomphoto").val(null);
+                            $(".file-name").html("");
+                        }
+                    });
                 }
 
                 function deleteModal(val) {
                     var id = $(val).attr("data-id");
                     var name = $(val).attr("data-name");
-                    $("#delete-modal").addClass("is-active");
-                    $(".deletethis").click(function(){
-                        window.location = "/deleteroom/"+id;
+                    Swal.fire({
+                        title: 'Delete Data?',
+                        text: 'Are you sure want to delete this data?',
+                        icon: 'error',
+                        showCancelButton: true,
+                        confirmButtonColor: '#2c598d',
+                        cancelButtonColor: 'light'
+                    });
+                    $(".swal2-confirm").click(function () {
+                        window.location = "/deleteroom/" + id;
                     });
 
                 }

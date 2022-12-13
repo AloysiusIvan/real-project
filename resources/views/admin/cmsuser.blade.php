@@ -34,13 +34,22 @@
             }
         }
         @media all and (max-width:1024px) {
-            table {table-layout: fixed; width: 378;}
+            table {
+                table-layout: fixed;
+                width: 378;
+            }
             td {
                 max-width: 378;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
             }
+        }
+        .button.is-primary {
+            background-color: #2c598d;
+        }
+        .button.is-primary:hover {
+            background-color: #234771;
         }
     </style>
     <body>
@@ -116,6 +125,16 @@
                             </a>
                         </li>
                     </ul>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="/bookinglist" class="has-icon">
+                                <span class="icon">
+                                    <i class="mdi mdi-view-list"></i>
+                                </span>
+                                <span class="menu-item-label">Booking List</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </aside>
             <section class="section is-title-bar">
@@ -185,7 +204,7 @@
                                             <th>NIK</th>
                                             <th>Nama</th>
                                             <th>Pekerjaan</th>
-                                            <th>Nama Institusi</th>
+                                            <th>Nama Instansi</th>
                                             <th>Tanggal</th>
                                             <th></th>
                                         </tr>
@@ -257,24 +276,6 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                            </div>
-                            <div class="notification">
-                                <div class="level">
-                                    <div class="level-left">
-                                        <div class="level-item">
-                                            <div class="buttons has-addons">
-                                                <button type="button" class="button is-active">1</button>
-                                                <button type="button" class="button">2</button>
-                                                <button type="button" class="button">3</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="level-right">
-                                        <div class="level-item">
-                                            <small>Page 1 of 3</small>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>

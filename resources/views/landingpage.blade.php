@@ -24,6 +24,11 @@
         #bg {
             animation: animate 5s infinite;
         }
+
+        .cobl {
+            font-family: 'Cooper Black', sans-serif;
+        }
+
         @media all and (min-width:1024px) {
             .pad {
                 padding-left: 21rem;
@@ -54,9 +59,7 @@
                 </div>
                 <div class="columns mt-6">
                     <div class="column has-text-centered">
-                        <h1
-                            class="title is-1 is-spaced"
-                            style="font-family:'Cooper Black', sans-serif; letter-spacing: 4px; color:#2c598d;">VISIT TECHNO</h1>
+                        <h1 class="cobl title is-1 is-spaced" style="letter-spacing: 4px; color:#2c598d;">VISIT TECHNO</h1>
                         <p class="subtitle is-3 pad">Reservasi Working Space Kantor Berijalan Astra Credit Company Petung Yogyakarta</p>
                     </div>
                 </div>

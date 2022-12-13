@@ -100,6 +100,15 @@
                             </a>
                         </li>
                     </ul>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="/bookinglist" class="has-icon">
+                                <span class="icon">
+                                    <i class="mdi mdi-view-list"></i>
+                                </span>
+                                <span class="menu-item-label">Booking List</span>
+                            </a>
+                        </li>
                 </div>
             </aside>
             <section class="section is-title-bar">
@@ -140,7 +149,7 @@
                             </span>
                             @if ($userdata[0]->validasi == "wait")
                             Wait Validation
-                            @elseif ($userdata[0]->validasi == "reject")
+                            @elseif($userdata[0]->validasi == "reject")
                             Inactive
                             @else
                             Active
@@ -163,7 +172,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->nik}}" disabled="disabled">
+                                                <input class="input" type="text" value="{{$item->nik}}" readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -177,7 +186,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->name}}" disabled="disabled">
+                                                <input class="input" type="text" value="{{$item->name}}" readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -191,7 +200,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->email}}" disabled="disabled">
+                                                <input class="input" type="text" value="{{$item->email}}" readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -205,7 +214,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->phone}}" disabled="disabled">
+                                                <input class="input" type="text" value="{{$item->phone}}" readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -219,7 +228,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->profesi}}" disabled="disabled">
+                                                <input class="input" type="text" value="{{$item->profesi}}" readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -237,7 +246,7 @@
                                                     class="input"
                                                     type="text"
                                                     value="{{$item->institusi}}"
-                                                    disabled="disabled">
+                                                    readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -255,7 +264,7 @@
                                                     class="input"
                                                     type="text"
                                                     value="{{$item->nama_institusi}}"
-                                                    disabled="disabled">
+                                                    readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -269,7 +278,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->alamat}}" disabled="disabled">
+                                                <input class="input" type="text" value="{{$item->alamat}}" readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -287,7 +296,7 @@
                                                     class="input"
                                                     type="text"
                                                     value="{{str_replace(',',', ',$item->keahlian)}}"
-                                                    disabled="disabled">
+                                                    readonly="readonly">
                                             </p>
                                         </div>
                                     </div>

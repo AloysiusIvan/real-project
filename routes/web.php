@@ -59,6 +59,7 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/editroom/{id}', [RoomController::class,'showroom'])->name('editroom');
     Route::post('/updateroom/{id}', [RoomController::class,'updateroom'])->name('updateroom');
     Route::get('/deleteroom/{id}', [RoomController::class,'deleteroom'])->name('deleteroom');
+    Route::get('/bookinglist', [BookingController::class,'bookinglist'])->name('bookinglist');
 });
 
 /* User Inactive */

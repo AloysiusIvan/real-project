@@ -229,6 +229,7 @@
                                             <label class="file-label">
                                                 <input
                                                     id="fotoktp"
+                                                    accept="image/*"
                                                     class="file-input"
                                                     type="file"
                                                     name="foto_ktp"
@@ -260,6 +261,19 @@
             </div>
         </section>
         <script>
+            $(".file-input").change(function () {
+                        var fileExtension = ['jpeg', 'jpg', 'png'];
+                        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                            Swal.fire({
+                                title: 'Tolong upload file gambar',
+                                icon: 'error',
+                                confirmButtonColor: '#2c598d',
+                            });
+                            $("#fotoktp").val(null);
+                            $(".file-name").html("");
+                        }
+                    });
+
             function setInputFilter(textbox, inputFilter, errMsg) {
                 [
                     "input",

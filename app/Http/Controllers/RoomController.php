@@ -16,7 +16,7 @@ class RoomController extends Controller
      */
     public function listroom()
     {
-        $room = Room::all();
+        $room = Room::paginate(10);
         return view('admin/cmsroom', compact('room'));
     }
 
@@ -44,18 +44,31 @@ class RoomController extends Controller
      */
     public function addroom(Request $request)
     {
-        $newroom = Room::create([
-            'room_name'=>$request->room_name,
-            'kapasitas'=>$request->kapasitas,
-            'status'=>"active",
-            'photo'=>"null"
-        ]);
-        $photo = $request->file('room_photo')->extension();
-        $newPhoto = $newroom->id.'.'.$photo;
-        $request->file('room_photo')->storeAs('public/img/room/', $newPhoto);
-        $addphoto = Room::findorfail($newroom->id);
-        $addphoto->update(array('photo' => $newPhoto));
-        Alert::toast('Success Add Room', 'success');
+        $this->validate($request, [
+            'room_photo' => 'mimes:jpeg,png,bmp,tiff |max:4096',
+        ],
+            $messages = [
+                'required' => 'The :attribute field is required.',
+                'mimes' => 'Only jpeg, png, bmp,tiff are allowed.'
+            ]
+        );
+        $count = Room::where('room_name','like','%'.$request->room_name.'%')->count();
+        if(!$count > 0){
+            $newroom = Room::create([
+                'room_name'=>$request->room_name,
+                'kapasitas'=>$request->kapasitas,
+                'status'=>"active",
+                'photo'=>"null"
+            ]);
+            $photo = $request->file('room_photo')->extension();
+            $newPhoto = $newroom->id.'.'.$photo;
+            $request->file('room_photo')->storeAs('public/img/room/', $newPhoto);
+            $addphoto = Room::findorfail($newroom->id);
+            $addphoto->update(array('photo' => $newPhoto));
+            Alert::toast('Success Add Room', 'success');
+        } else {
+            Alert::toast('Ruangan sudah ada', 'error');
+        }
         return redirect('cmsroom');
     }
 

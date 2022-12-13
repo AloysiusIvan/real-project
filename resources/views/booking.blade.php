@@ -14,6 +14,7 @@
         <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,1,200"/>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <style>
         .navbar-item img {
@@ -79,8 +80,56 @@
             border-radius: 6px;
             border-color: #d9dde3;
         }
+        .bor {
+            outline-style: solid;
+            outline-width: 3px;
+            outline-color: #2c598d;
+            cursor: pointer;
+        }
+        .tile {
+            text-decoration: none;
+        }
+        .lds-dual-ring {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -50px 0 0 -50px;
+        }
+        .lds-dual-ring:after {
+            content: " ";
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border-radius: 50%;
+            border: 6px solid #fff;
+            border-color: #fff transparent #fff transparent;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        #overlay {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            top: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
     </style>
     <body class="bg-color">
+        <div id="overlay" hidden="hidden">
+            <div class="lds-dual-ring"></div>
+        </div>
         @include('nav')
         <div class="container pad-mob">
             <div class="columns">
@@ -90,46 +139,37 @@
             </div>
             <div class="columns is-centered pad-mob">
                 <div class="column is-6-tablet is-9-desktop box mabo">
-                    <form action="{{route('search')}}" method="get">
-                        <div class="field">
-                            <label class="label">Keperluan</label>
-                            <div class="control">
-                                <input
-                                    id="keperluan"
-                                    type="text"
-                                    class="input inre"
-                                    required="required"
-                                    name="keperluan">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label">Tanggal Berkunjung</label>
-                            <div class="field-body">
-                                <div class="field">
-                                    <p class="control">
-                                        <input
-                                            placeholder="Pilih Tanggal"
-                                            id="tgl"
-                                            name="tgl"
-                                            class="input"
-                                            type="date"
-                                            required="required">
-                                    </p>
+                    <div class="field">
+                        <div class="field-body">
+                            <div class="field">
+                                <label class="label">Keperluan</label>
+                                <div class="control">
+                                    <input
+                                        id="keperluan"
+                                        type="text"
+                                        class="input inre is-fullwidth"
+                                        required="required"
+                                        name="keperluan">
                                 </div>
-                                <div class="field">
-                                    <p class="control">
-                                        <button
-                                            id="primarytechno"
-                                            class="button is-primary has-text-weight-bold is-fullwidth">
-                                            Cari Working Space
-                                        </button>
-                                    </p>
+                            </div>
+                            <div class="field">
+                                <label class="label">Tanggal Berkunjung</label>
+                                <div class="control">
+                                    <input
+                                        placeholder="Pilih Tanggal"
+                                        id="tgl"
+                                        name="tgl"
+                                        class="input"
+                                        type="date"
+                                        required="required">
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
+
+            <div id="read"></div>
         </div>
     </body>
     <script>
@@ -139,6 +179,54 @@
                 $(".navbar-menu").toggleClass("is-active");
 
             });
+        });
+
+        function read() {
+            $.ajax({
+                type: "get",
+                url: "{{url('booking/search')}}",
+                data: {
+                    tgl: $("#tgl").val()
+                },
+                success: function (data) {
+                    $("#read").html(data);
+                }
+            });
+        }
+
+        $("#tgl").change(function () {
+            $.ajax({
+                type: "get",
+                url: "{{route('search')}}",
+                data: {
+                    tgl: $("#tgl").val()
+                },
+                beforeSend: function () {
+                    $("#overlay").show();
+                },
+                success: function (data) {
+                    $("#read").html(data);
+                    $(".hov").hover(function () {
+                        $(this).addClass("bor");
+                    }, function () {
+                        $(this).removeClass("bor");
+                    });
+                    $("#overlay").hide();
+                }
+            });
+        });
+
+        $(function () {
+            var dtToday = new Date();
+            var month = dtToday.getMonth() + 1;
+            var day = dtToday.getDate();
+            var year = dtToday.getFullYear();
+            if (month < 10) 
+                month = '0' + month.toString();
+            if (day < 10) 
+                day = '0' + day.toString();
+            var maxDate = year + '-' + month + '-' + day;
+            $('#tgl').attr('min', maxDate);
         });
     </script>
 </html>

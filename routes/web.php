@@ -44,7 +44,7 @@ Route::middleware(['user'])->group(function () {
     });
     Route::get('/history', [BookingController::class,'history'])->name('history');
     Route::get('/book', [BookingController::class,'index'])->name('book');
-    Route::get('/book/search', [BookingController::class,'search'])->name('search');
+    Route::get('/search', [BookingController::class,'search'])->name('search');
     Route::get('/booking', [BookingController::class,'booking'])->name('booking');
 });
 

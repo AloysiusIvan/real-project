@@ -82,7 +82,6 @@ class BookingController extends Controller
     public function search(Request $request)
     {
         $tgl = $request->tgl;
-        $keperluan = $request->keperluan;
         $count = Capacity::where('tanggal',$tgl)->count();
         if ($count == 0){
             $roomavail = Room::all();
@@ -92,9 +91,10 @@ class BookingController extends Controller
                     $leftJoin->on('mst_room.id', '=', 'tmp_room_capacity.id_room');
                     $leftJoin->on(DB::raw('tmp_room_capacity.tanggal'),DB::raw("'".$tgl."'"));
                 })->get();
-            /* $roomavail = Room::all(); */
         }
-        return view('roomsearch',compact('roomavail','keperluan','tgl'));
+        return view('room')->with([
+            'data' => $roomavail
+        ]);
     }
 
     /**

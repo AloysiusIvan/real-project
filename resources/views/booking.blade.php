@@ -228,5 +228,9 @@
             var maxDate = year + '-' + month + '-' + day;
             $('#tgl').attr('min', maxDate);
         });
+
+        $("#add").click(function(){
+            $("#wrapper").append('<div class="columns"><div class="column is-10"><input class="input" type="text" placeholder="Text input"></div><div class="column"><button id="add" class="button sec"><span class="material-symbols-outlined">add</span></button></div></div>');
+        });
     </script>
 </html>

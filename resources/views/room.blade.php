@@ -41,6 +41,38 @@
     </div>
 </div>
 @endforeach
+<div id="group" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <div class="container box">
+            <div class="columns">
+                <div class="column">
+                    <p class="has-text-danger has-text-weight-bold">NIK harus sudah terdaftar</p>
+                </div>
+            </div>
+            <div id="wrap">
+                <div class="columns is-mobile">
+                    <div class="column is-10">
+                        <input class="input" type="text" placeholder="NIK">
+                    </div>
+                    <div class="column">
+                        <button id="add" class="button sec">
+                            <span class="material-symbols-outlined">
+                                add
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column">
+                    <button id="primarytechno" class="button is-primary">Book</button>
+                    <button id="closegroup" class="button text is-primary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     function book(val) {
         var id = $(val).attr("data-id");
@@ -59,8 +91,11 @@
                 text: 'Pilih "OK" untuk melanjutkan',
                 icon: 'question',
                 showCancelButton: true,
+                showDenyButton: true,
+                denyButtonText: `Booking Group`,
                 confirmButtonColor: '#2c598d',
-                cancelButtonColor: 'light'
+                denyButtonColor: '#d8e3f8',
+                cancelButtonColor: '#ffffff'
             })
             $(".swal2-confirm").click(function () {
                 $.ajax({
@@ -91,6 +126,44 @@
                     }
                 });
             });
+            $(".swal2-deny").click(function(){
+                $("#group").addClass("is-active");
+                $("#closegroup").click(function(){
+                    $("#group").removeClass("is-active");
+                });
+                $(".modal-background").click(function(){
+                    $("#group").removeClass("is-active");
+                    $(".par").remove();
+                });
+            });
         }
     }
+
+    $("#add").click(function(){
+        $("#wrap").append('<div class="columns par is-mobile"><div class="column is-10"><input class="input" type="text" placeholder="NIK"></div><div class="column"><button id="rem" class="button err"><span class="material-symbols-outlined">close</span></button></div></div>');
+        $(".err").click(function(){
+            $(this).parent("div").parent("div").remove();
+        });
+    });
 </script>
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,700,1,200"/>
+<style>
+    .swal2-styled.swal2-deny{
+        color: #111c2b;
+    }
+    .swal2-styled.swal2-cancel {
+        color: #2c598d;
+    }
+    .button.sec{
+        background-color: #d3e3ff;
+    }
+    .button.err{
+        background-color: #ffdad6;
+    }
+    .button.text.is-primary{
+        background-color: rgba(255, 99, 71, 0);
+        color: #2c598d;
+    }
+</style>

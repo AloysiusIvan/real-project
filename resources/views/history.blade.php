@@ -45,6 +45,12 @@
             .mabo {
                 margin-top: 4.875rem;
             }
+            td {
+                max-width: 206px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
         }
         @media screen and (max-width:1023px) {
             .pad-mob {
@@ -125,7 +131,7 @@
                                 <th>Ruangan</th>
                                 <th>Tanggal Booking</th>
                                 <th>Keperluan</th>
-                                <th></th>
+                                <th class="has-text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -217,5 +223,7 @@
                 $("#tiket").removeClass("is-active");
             });
         };
+
+        $("#history-nav").css({"background-color":"#d3e3ff", "color":"#001c39"});
     </script>
 </html>

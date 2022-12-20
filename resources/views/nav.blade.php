@@ -19,13 +19,13 @@
         </div>
         <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-                <a href="/home" class="navbar-item">
+                <a href="/home" class="navbar-item" id="home-nav">
                     Beranda
                 </a>
-                <a href="/book" class="navbar-item">
-                    Pesanan
+                <a href="/book" class="navbar-item" id="book-nav">
+                    Reservasi
                 </a>
-                <a href="/history" class="navbar-item">
+                <a href="/history" class="navbar-item" id="history-nav">
                     Riwayat
                 </a>
             </div>

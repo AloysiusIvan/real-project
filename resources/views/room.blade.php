@@ -1,9 +1,10 @@
 @foreach ($data as $item)
-<div class="columns is-centered pad-mob">
+<div class="columns is-centered pad-mob mar-mob">
     <div
         class="hov column is-6-tablet is-9-desktop box mt-3"
         data-id="{{$item->id}}"
         data-name="{{$item->room_name}}"
+        data-cap ="{{$item->cap}}"
         onclick="book(this)">
         <div class="tile is-ancestor">
             <div class="tile is-4 is-parent">
@@ -29,7 +30,8 @@
                     <p class="is-size-6">No Smoking</p>
                 </div>
                 <div class="tile is-child">
-                    <p class="is-size-6">Sisa Kapasitas : @if($item->cap == null)
+                    <p class="is-size-6">Sisa Kapasitas : 
+                        @if($item->cap == "")
                         {{$item->kapasitas}}
                         @else
                         {{$item->cap}}
@@ -77,6 +79,7 @@
     function book(val) {
         var id = $(val).attr("data-id");
         var name = $(val).attr("data-name");
+        var cap = $(val).attr("data-cap");
         var keperluan = $("#keperluan").val();
         var tgl = $("#tgl").val();
         if (keperluan == ""){
@@ -85,6 +88,12 @@
                 icon: 'error',
                 confirmButtonColor: '#2c598d'
             })    
+        } else if (cap == "0"){
+            Swal.fire({
+                title: 'Ruangan sudah penuh',
+                icon: 'error',
+                confirmButtonColor: '#2c598d'
+            })
         } else {
             Swal.fire({
                 title: 'Booking ruangan ini?',
@@ -165,5 +174,10 @@
     .button.text.is-primary{
         background-color: rgba(255, 99, 71, 0);
         color: #2c598d;
+    }
+    @media all and (max-width: 1023px) {
+        .mar-mob{
+            margin-top: 0.5rem;
+        }
     }
 </style>

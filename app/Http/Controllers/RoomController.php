@@ -61,7 +61,7 @@ class RoomController extends Controller
                 'photo'=>"null"
             ]);
             $photo = $request->file('room_photo')->extension();
-            $newPhoto = $newroom->id.'.'.$photo;
+            $newPhoto = $newroom->id.'_'.date_format($newroom->updated_at,"YmdHis").'.'.$photo;
             $request->file('room_photo')->storeAs('public/img/room/', $newPhoto);
             $addphoto = Room::findorfail($newroom->id);
             $addphoto->update(array('photo' => $newPhoto));
@@ -104,28 +104,33 @@ class RoomController extends Controller
     public function updateroom(Request $request, $id)
     {
         $room = Room::findorfail($id);
-        if (!empty($request->photo)){
-            $photo = $request->file('photo')->extension();
-            $newPhoto = $room->id.'.'.$photo;
-            if(File::exists("public/img/room/".$newPhoto)) {
-                File::delete("public/img/room/".$newPhoto);
+        $count = Room::where('room_name',$request->room_name)->whereNotIn('id',[$id])->count();
+        if ($count < 1){
+            if (!empty($request->photo)){
+                File::delete(storage_path("app/public/img/room/").$room->photo);
+                $photo = $request->file('photo')->extension();
+                $room->update([
+                    'room_name'=>$request->room_name,
+                    'kapasitas'=>$request->kapasitas,
+                    'status'=>$request->stva,
+                    'photo'=> "prepare"
+                ]);
+                $newPhoto = $room->id.'_'.date_format($room->updated_at,"YmdHis").'.'.$photo;
+                $request->file('photo')->storeAs('public/img/room/',$newPhoto);
+                $room->update(array('photo' => $newPhoto));
+            } else{
+                $room->update([
+                    'room_name'=>$request->room_name,
+                    'status'=>$request->stva,
+                    'kapasitas'=>$request->kapasitas
+                ]);
             }
-            $request->file('photo')->storeAs('public/img/room/', $newPhoto);
-            $room->update([
-                'room_name'=>$request->room_name,
-                'kapasitas'=>$request->kapasitas,
-                'status'=>$request->stva,
-                'photo'=>$newPhoto
-            ]);
-        } else{
-            $room->update([
-                'room_name'=>$request->room_name,
-                'status'=>$request->stva,
-                'kapasitas'=>$request->kapasitas
-            ]);
+            Alert::toast('Success Update', 'success');
+            return redirect('cmsroom');
+        } else {
+            Alert::error('Error', 'Nama ruangan sudah ada')->showConfirmButton('OK', '#2c598d');;
+            return back();
         }
-        Alert::toast('Success Update', 'success');
-        return redirect('cmsroom');
     }
 
     /**

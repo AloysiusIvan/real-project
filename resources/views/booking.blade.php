@@ -232,5 +232,7 @@
         $("#add").click(function(){
             $("#wrapper").append('<div class="columns"><div class="column is-10"><input class="input" type="text" placeholder="Text input"></div><div class="column"><button id="add" class="button sec"><span class="material-symbols-outlined">add</span></button></div></div>');
         });
+
+        $("#home-nav").css({"background-color":"#d3e3ff", "color":"#001c39"});
     </script>
 </html>

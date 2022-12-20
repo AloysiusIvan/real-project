@@ -166,6 +166,7 @@
                 </div>
             </section>
             <section class="section is-main-section">
+            <input  id="search" class="search input mb-3" type="text" placeholder="Search" style="max-width:25vw;">
                 <div class="card has-table">
                     <div class="tabs is-boxed mb-0">
                         <ul>
@@ -206,7 +207,7 @@
                                             <th>Pekerjaan</th>
                                             <th>Nama Instansi</th>
                                             <th>Tanggal</th>
-                                            <th></th>
+                                            <th class="has-text-right">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="waiting-tab-content">
@@ -359,6 +360,10 @@
                 $("#active").addClass("is-active");
                 $("#active-tab-content").removeClass("is-hidden");
             }
+
+            $("#search").keyup(function(){
+                alert("change");
+            });
         </script>
     </body>
 </html>

@@ -203,7 +203,7 @@
                                             <th>Ruangan</th>
                                             <th>Keperluan</th>
                                             <th>Tanggal Berkunjung</th>
-                                            <th></th>
+                                            <th class="has-text-right">Detail</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -224,6 +224,7 @@
                                                         data-tgl="{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}"
                                                         data-keperluan="{{$data->keperluan}}"
                                                         data-book="{{$data->created_at->isoFormat('ddd, DD MMM Y')}}"
+                                                        data-nik="{{$data->nik}}"
                                                         onclick="detail(this)">
                                                         <span class="icon">
                                                             <i class="mdi mdi-eye"></i>
@@ -236,20 +237,30 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <?php 
+                                $total = $bookinglist->total();
+                                $page = $bookinglist->perPage();
+                                $current = $bookinglist->currentPage();
+                                $totalpage = ceil($total / $page);
+                            ?>
                             <div class="notification">
                                 <div class="level">
                                     <div class="level-left">
                                         <div class="level-item">
                                             <div class="buttons has-addons">
-                                                <button type="button" class="button is-active">1</button>
-                                                <button type="button" class="button">2</button>
-                                                <button type="button" class="button">3</button>
+                                                @for($i=1 ; $i <= $totalpage ; $i++)
+                                                @if ($i == $current)
+                                                <a style="text-decoration:none" href="{{$bookinglist->url($i)}}"><button type="button" class="button is-active">{{$i}}</button></a>
+                                                @else
+                                                <a style="text-decoration:none" href="{{$bookinglist->url($i)}}"><button type="button" class="button">{{$i}}</button></a>
+                                                @endif
+                                                @endfor
                                             </div>
                                         </div>
                                     </div>
                                     <div class="level-right">
                                         <div class="level-item">
-                                            <small>Page 1 of 3</small>
+                                            <small>Page {{$current}} of {{$totalpage}}</small>
                                         </div>
                                     </div>
                                 </div>
@@ -294,6 +305,12 @@
                         </div>
                         <div class="columns is-mobile">
                             <div class="column has-text-weight-bold">
+                                NIK
+                            </div>
+                            <div id="nik" class="column"></div>
+                        </div>
+                        <div class="columns is-mobile">
+                            <div class="column has-text-weight-bold">
                                 Ruangan
                             </div>
                             <div id="room" class="column"></div>
@@ -335,6 +352,7 @@
                 function detail(vari) {
                     $("#kode").html($(vari).attr("data-kode"));
                     $("#nama").html($(vari).attr("data-nama"));
+                    $("#nik").html($(vari).attr("data-nik"));
                     $("#room").html($(vari).attr("data-room"));
                     $("#tglber").html($(vari).attr("data-tgl"));
                     $("#keperluan").html($(vari).attr("data-keperluan"));

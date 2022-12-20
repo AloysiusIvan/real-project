@@ -90,7 +90,7 @@
                             <div class="columns">
                                 <div class="column has-text-center">
                                     <p class="is-size-4">
-                                        Booking Working Space
+                                        Yuk Reservasi Sekarang
                                     </p>
                                 </div>
                                 <div class="column has-text-right">
@@ -108,13 +108,15 @@
                             <div class="columns">
                                 <div class="column has-text-center">
                                     <p class="is-size-4">
-                                        History Booking
+                                        Ayo lihat riwayat pesanan kamu
                                     </p>
                                 </div>
                                 <div class="column has-text-right">
-                                    <button id="primarytechno" class="button is-primary has-text-weight-bold">
-                                        History
-                                    </button>
+                                    <a href="/history">
+                                        <button id="primarytechno" class="button is-primary has-text-weight-bold">
+                                            Riwayat
+                                        </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -128,8 +130,9 @@
             $(".navbar-burger").click(function () {
                 $(".navbar-burger").toggleClass("is-active");
                 $(".navbar-menu").toggleClass("is-active");
-
             });
         });
+
+        $("#home-nav").css({"background-color":"#d3e3ff", "color":"#001c39"});
     </script>
 </html>

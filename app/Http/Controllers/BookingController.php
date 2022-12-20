@@ -84,13 +84,13 @@ class BookingController extends Controller
         $tgl = $request->tgl;
         $count = Capacity::where('tanggal',$tgl)->count();
         if ($count == 0){
-            $roomavail = Room::all();
+            $roomavail = Room::where('status','active')->get();
         } else{
                 $roomavail = Room::select('mst_room.*','tmp_room_capacity.kapasitas as cap','tmp_room_capacity.tanggal as tgl')
                     ->leftJoin('tmp_room_capacity', function($leftJoin)use($tgl){
-                    $leftJoin->on('mst_room.id', '=', 'tmp_room_capacity.id_room');
-                    $leftJoin->on(DB::raw('tmp_room_capacity.tanggal'),DB::raw("'".$tgl."'"));
-                })->get();
+                        $leftJoin->on('mst_room.id', '=', 'tmp_room_capacity.id_room');
+                        $leftJoin->on(DB::raw('tmp_room_capacity.tanggal'),DB::raw("'".$tgl."'"));
+                    })->where('status','active')->get();
         }
         return view('room')->with([
             'data' => $roomavail
@@ -114,7 +114,7 @@ class BookingController extends Controller
     {
         $bookinglist = Booking::join('users','trn_booking.id_user','users.id')
             ->join('mst_room','trn_booking.id_room','mst_room.id')
-            ->select('trn_booking.*','users.name','mst_room.room_name')->get();
+            ->select('trn_booking.*','users.name','users.nik','mst_room.room_name')->paginate(10);
         return view('admin/bookinglist',compact('bookinglist'));
     }
 

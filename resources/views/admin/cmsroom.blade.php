@@ -207,8 +207,8 @@
                                         <tr>
                                             <th>Nama Ruangan</th>
                                             <th>Kapasitas</th>
-                                            <th>Status</th>
-                                            <th></th>
+                                            <th class="has-text-centered">Status</th>
+                                            <th class="has-text-right">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -216,7 +216,7 @@
                                         <tr>
                                             <td data-label="Nama Ruangan">{{$item->room_name}}</td>
                                             <td data-label="Kapasitas">{{$item->kapasitas}}</td>
-                                            <td data-label="Status">
+                                            <td data-label="Status" style="text-align:center;">
                                                 @if ($item->status == "active")
                                                 <span class="icon has-text-success">
                                                     <i class="mdi mdi-24px mdi-check"></i>
@@ -230,7 +230,7 @@
                                             <td class="is-actions-cell">
                                                 <div class="buttons is-right">
                                                     <a href="{{route('editroom',$item->id)}}">
-                                                        <button class="button is-small is-primary" type="button">
+                                                        <button class="button is-small is-primary" type="button" style="background-color:#d8e3f8;color:#111c2b;">
                                                             <span class="icon">
                                                                 <i class="mdi mdi-pencil"></i>
                                                             </span>
@@ -276,7 +276,7 @@
                                     </div>
                                     <div class="level-right">
                                         <div class="level-item">
-                                            <small>Page 1 of 3</small>
+                                            <small>Page {{$current}} of {{$totalpage}}</small>
                                         </div>
                                     </div>
                                 </div>

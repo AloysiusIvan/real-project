@@ -229,6 +229,17 @@
                                             </td>
                                             <td class="is-actions-cell">
                                                 <div class="buttons is-right">
+                                                    <a
+                                                        data-capacity="{{$item->kapasitas}}"
+                                                        data-roomname="{{$item->room_name}}"
+                                                        data-status="{{$item->status}}"
+                                                        onclick="detailModal(this)">
+                                                        <button class="button is-small is-primary" type="button" style="background-color:rgba(0,0,0,0);color:#234771;">
+                                                            <span class="icon">
+                                                                <i class="mdi mdi-eye"></i>
+                                                            </span>
+                                                        </button>
+                                                    </a>
                                                     <a href="{{route('editroom',$item->id)}}">
                                                         <button class="button is-small is-primary" type="button" style="background-color:#d8e3f8;color:#111c2b;">
                                                             <span class="icon">
@@ -238,7 +249,6 @@
                                                     </a>
                                                     <a
                                                         data-id="{{$item->id}}"
-                                                        data-name="{{$item->room_name}}"
                                                         onclick="deleteModal(this)">
                                                         <button class="button is-small is-danger jb-modal" type="button">
                                                             <span class="icon">
@@ -363,22 +373,43 @@
                 </div>
             </div>
 
-            <div id="delete-modal" class="modal">
-                <div class="modal-background jb-modal-close"></div>
+            <div id="detail-modal" class="modal">
+            <div class="modal-background jb-modal-close"></div>
                 <div class="modal-card">
                     <header class="modal-card-head">
                         <p class="modal-card-title">
-                            <strong>Delete Room</strong>
+                            <strong>Detail Ruangan</strong>
                         </p>
                         <button class="delete jb-modal-close" aria-label="close"></button>
                     </header>
                     <section class="modal-card-body">
-                        <p>Are you sure want to delete this data?</p>
-                        <p>This process cannot be undone.</p>
+                        <div class="columns is-mobile">
+                            <div class="column has-text-weight-bold">
+                                Nama Ruangan
+                            </div>
+                            <div id="room-name" class="column"></div>
+                        </div>
+                        <div class="columns is-mobile">
+                            <div class="column has-text-weight-bold">
+                                Kapasitas
+                            </div>
+                            <div id="capacity" class="column"></div>
+                        </div>
+                        <div class="columns is-mobile">
+                            <div class="column has-text-weight-bold">
+                                Status
+                            </div>
+                            <div id="status" class="column"></div>
+                        </div>
+                        <div class="columns is-mobile">
+                            <div class="column has-text-weight-bold">
+                                Photo
+                            </div>
+                            <div id="photo" class="column"></div>
+                        </div>
                     </section>
-                    <footer class="modal-card-foot">
-                        <button class="button jb-modal-close">Cancel</button>
-                        <button class="button is-danger deletethis">Delete</button>
+                    <footer class="modal-card-foot is-centered">
+                        <button class="button is-primary jb-modal-close">OK</button>
                     </footer>
                 </div>
             </div>
@@ -430,6 +461,14 @@
                         window.location = "/deleteroom/" + id;
                     });
 
+                }
+
+                function detailModal(that){
+                    var name = $(that).attr("data-name");
+                    $("#room-name").html($(that).attr("data-roomname"));
+                    $("#capacity").html($(that).attr("data-capacity"));
+                    $("#status").html($(that).attr("data-status"));
+                    $("#detail-modal").addClass("is-active");
                 }
 
                 function setInputFilter(textbox, inputFilter, errMsg) {

@@ -168,7 +168,7 @@
             <section class="section is-main-section">
             <input  id="search" class="search input mb-3" type="text" placeholder="Search" style="max-width:25vw;">
                 <div class="card has-table">
-                    <div class="tabs is-boxed mb-0">
+                    <div id="tab-validasi" class="tabs is-boxed mb-0">
                         <ul>
                             <li id="waiting" class="is-active">
                                 <a href="#waiting" onclick="switchToWaiting()">
@@ -199,7 +199,7 @@
                     <div class="card-content">
                         <div class="b-table has-pagination">
                             <div class="table-wrapper has-mobile-cards">
-                                <table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+                                <table id="table-default" class="table is-fullwidth is-striped is-hoverable is-fullwidth">
                                     <thead>
                                         <tr>
                                             <th>NIK</th>
@@ -277,6 +277,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                                <table id="table-search" class="table is-fullwidth is-striped is-hoverable is-fullwidth" style="display:none;"></table>
                             </div>
                         </div>
                     </div>
@@ -361,8 +362,26 @@
                 $("#active-tab-content").removeClass("is-hidden");
             }
 
-            $("#search").keyup(function(){
-                alert("change");
+            $("#search").keyup(function () {
+                $.ajax({
+                    type: "get",
+                    url: "{{route('searchuser')}}",
+                    data: {
+                        search: $("#search").val()
+                    },
+                    success: function (data) {
+                        if(!$("#search").val()){
+                            $("#table-default").show();
+                            $("#tab-validasi").show();
+                            $("#table-search").hide();
+                        } else{
+                            $("#table-default").hide();
+                            $("#tab-validasi").hide();
+                            $("#table-search").html(data);
+                            $("#table-search").show();
+                        }
+                    }
+                });
             });
         </script>
     </body>

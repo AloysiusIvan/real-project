@@ -65,6 +65,7 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/dashboard', function () {
         return view('admin/dashboard');
     });
+    Route::get('/searchuser', [UserAccountController::class,'searchuser'])->name('searchuser');
 });
 
 /* User Inactive */

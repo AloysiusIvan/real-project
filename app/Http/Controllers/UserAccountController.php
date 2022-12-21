@@ -23,6 +23,13 @@ class UserAccountController extends Controller
         return view('admin/cmsuser', compact('user','userac','userinac'));
     }
 
+    public function searchuser (Request $request){
+        $user = User::where('nik', '!=', 'admin')->where('name','like','%'.$request->search.'%')->get();
+        return view('admin/userdata')->with([
+            'data' => $user
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -112,6 +112,24 @@
             border-radius: 6px;
             border-color: #d9dde3;
         }
+        @keyframes modal-show {
+            0% {
+                transform: scale(0.7);
+            }
+            45% {
+                transform: scale(1.05);
+            }
+            80% {
+                transform: scale(0.95);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .modal-card {
+            animation-name: modal-show;
+            animation-duration: 0.3s;
+        }
     </style>
     <body class="bg-color">
         @include('nav')
@@ -135,9 +153,12 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php 
+                                $i = 1;
+                            ?>
                             @foreach($history as $data)
                             <tr>
-                                <td data-label="No">1</td>
+                                <td data-label="No">{{$i++}}</td>
                                 <td data-label="Ruangan">{{$data->room_name}}</td>
                                 <td data-label="Tanggal Booking">{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}</td>
                                 <td data-label="Keperluan">{{$data->keperluan}}</td>
@@ -151,7 +172,7 @@
                                             data-room="{{$data->room_name}}"
                                             data-kode="{{$data->kode_booking}}"
                                             onclick="but(this)">Detail</button>
-                                        <button class="button is-small is-danger" type="button">Batalkan</button>
+                                        <button data-id="{{$data->id}}" class="button is-small is-danger" type="button" onclick="batalkan(this)">Batalkan</button>
                                     </div>
                                 </td>
                             </tr>
@@ -203,6 +224,7 @@
                 </footer>
             </div>
         </div>
+        @include('sweetalert::alert')
     </body>
     <script>
         $(document).ready(function () {
@@ -224,6 +246,26 @@
             });
         };
 
+        function batalkan(vari){
+            var id = $(vari).attr("data-id");
+            Swal.fire({
+                        title: 'Batalkan Reservasi?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Batalkan',
+                        confirmButtonColor: '#2c598d',
+                        cancelButtonColor: '#ffffff'
+                    });
+            $(".swal2-confirm").click(function () {
+                window.location = "/cancelbook/"+id;
+            });
+        }
+
         $("#history-nav").css({"background-color":"#d3e3ff", "color":"#001c39"});
     </script>
+    <style>
+        .swal2-styled.swal2-cancel {
+            color: #2c598d;
+        }
+    </style>
 </html>

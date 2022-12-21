@@ -8,6 +8,7 @@ use App\Models\Room;
 use App\Models\Capacity;
 use Illuminate\Support\Facades\DB;
 Use \Carbon\Carbon;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class BookingController extends Controller
 {
@@ -79,6 +80,56 @@ class BookingController extends Controller
         }
     }
 
+    public function bookinggroup(Request $request){
+        $x = 0;
+        $y = 0;
+        foreach($request->nikgroup as $key => $value) {
+            $id = DB::table('users')->where('nik',$request->nikgroup[$key])->value('id');
+            $regval = DB::table('users')->where('nik',$request->nikgroup[$key])->where('validasi','valid')->count();
+            if ($regval == 1){
+                $y++;
+            }
+        }
+        foreach($request->nikgroup as $key => $value) {
+            $id = DB::table('users')->where('nik',$request->nikgroup[$key])->value('id');
+            $dahbooking = Booking::where('id_user',$id)->where('tanggal',$request->tgl)->count();
+            if ($dahbooking > 0){
+                $x++;
+            }
+        }
+        if (count($request->nikgroup) == count(array_unique($request->nikgroup))){
+            if ($y == sizeof($request->nikgroup)){
+                if ($x == 0){
+                    foreach($request->nikgroup as $key => $value) {
+                        $id = DB::table('users')->where('nik',$request->nikgroup[$key])->value('id');
+                        $kode_booking = "VT".$id.$request->id_room.str_replace("-", "", $request->tgl);
+                        Booking::create([
+                            'id_user'=>$id,
+                            'id_room'=>$request->id_room,
+                            'tanggal'=>$request->tgl,
+                            'keperluan'=>$request->keperluan,
+                            'kode_booking'=>$kode_booking,
+                        ]);
+                    }
+                    $capas = DB::table('mst_room')->where('id',$request->id_room)->value('kapasitas');
+                    $cap = $capas-sizeof($request->nikgroup);
+                    Capacity::create([
+                        'id_room' => $request->id_room,
+                        'tanggal' => $request->tgl,
+                        'kapasitas' => $cap
+                    ]);
+                    return 'Reservasi Berhasil!';
+                } else {
+                    return 'already book';
+                }
+            } else {
+                return 'not found nik';
+            }
+        } else {
+            return 'duplicate';
+        }
+    }
+
     public function search(Request $request)
     {
         $tgl = $request->tgl;
@@ -147,8 +198,15 @@ class BookingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function cancelbook($id)
     {
-        //
+        $trn = Booking::findorfail($id);
+        $sisa = DB::table('tmp_room_capacity')->where('id_room',$trn->id_room)->where('tanggal',$trn->tanggal)
+                    ->value('kapasitas');
+        $cap = DB::table('tmp_room_capacity')->where('id_room',$trn->id_room)->where('tanggal',$trn->tanggal)
+            ->update(array('kapasitas' => $sisa+1));
+        $trn->delete();
+        Alert::success('Reservasi Dibatalkan', 'Berhasil membatalkan reservasi')->showConfirmButton('OK', '#2c598d');
+        return back();
     }
 }

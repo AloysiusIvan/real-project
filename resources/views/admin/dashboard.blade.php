@@ -115,7 +115,7 @@
                 <div class="menu is-menu-main">
                     <ul class="menu-list">
                         <li>
-                            <a href="/dashboard" class="has-icon">
+                            <a href="/dashboard" class="is-active has-icon">
                                 <span class="icon">
                                     <i class="mdi mdi-desktop-mac"></i>
                                 </span>
@@ -145,7 +145,7 @@
                     </ul>
                     <ul class="menu-list">
                         <li>
-                            <a href="/bookinglist" class="is-active has-icon">
+                            <a href="/bookinglist" class="has-icon">
                                 <span class="icon">
                                     <i class="mdi mdi-view-list"></i>
                                 </span>
@@ -161,7 +161,7 @@
                         <div class="level-item">
                             <ul>
                                 <li>Admin</li>
-                                <li>Booking List</li>
+                                <li>Dashboard</li>
                             </ul>
                         </div>
                     </div>
@@ -173,7 +173,7 @@
                         <div class="level-left">
                             <div class="level-item">
                                 <h1 class="title">
-                                    Booking List
+                                    Dashboard
                                 </h1>
                             </div>
                         </div>
@@ -197,70 +197,22 @@
                         <div class="b-table has-pagination">
                             <div class="table-wrapper has-mobile-cards">
                                 <table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
-                                    <thead>
-                                        <tr>
-                                            <th>Nama Pengunjung</th>
-                                            <th>Ruangan</th>
-                                            <th>Keperluan</th>
-                                            <th>Tanggal Berkunjung</th>
-                                            <th class="has-text-right">Detail</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($bookinglist as $data)
-                                        <tr>
-                                            <td data-label="Nama Pengunjung">{{$data->name}}</td>
-                                            <td data-label="Ruangan">{{$data->room_name}}</td>
-                                            <td data-label="Keperluan">{{$data->keperluan}}</td>
-                                            <td data-label="Tanggal Berkunjung">{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}</td>
-                                            <td class="is-actions-cell">
-                                                <div class="buttons is-right">
-                                                    <button
-                                                        class="button is-small is-primary"
-                                                        type="button"
-                                                        data-kode="{{$data->kode_booking}}"
-                                                        data-nama="{{$data->name}}"
-                                                        data-room="{{$data->room_name}}"
-                                                        data-tgl="{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}"
-                                                        data-keperluan="{{$data->keperluan}}"
-                                                        data-book="{{$data->created_at->isoFormat('ddd, DD MMM Y')}}"
-                                                        data-nik="{{$data->nik}}"
-                                                        onclick="detail(this)">
-                                                        <span class="icon">
-                                                            <i class="mdi mdi-eye"></i>
-                                                        </span>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
+                                    
                                 </table>
                             </div>
-                            <?php 
-                                $total = $bookinglist->total();
-                                $page = $bookinglist->perPage();
-                                $current = $bookinglist->currentPage();
-                                $totalpage = ceil($total / $page);
-                            ?>
+                            
                             <div class="notification">
                                 <div class="level">
                                     <div class="level-left">
                                         <div class="level-item">
                                             <div class="buttons has-addons">
-                                                @for($i=1 ; $i <= $totalpage ; $i++)
-                                                @if ($i == $current)
-                                                <a style="text-decoration:none" href="{{$bookinglist->url($i)}}"><button type="button" class="button is-active">{{$i}}</button></a>
-                                                @else
-                                                <a style="text-decoration:none" href="{{$bookinglist->url($i)}}"><button type="button" class="button">{{$i}}</button></a>
-                                                @endif
-                                                @endfor
+                                               
                                             </div>
                                         </div>
                                     </div>
                                     <div class="level-right">
                                         <div class="level-item">
-                                            <small>Page {{$current}} of {{$totalpage}}</small>
+                                            <small>Page </small>
                                         </div>
                                     </div>
                                 </div>
@@ -280,66 +232,6 @@
                     </div>
                 </div>
             </footer>
-
-            <div id="detail-modal" class="modal">
-                <div class="modal-background jb-modal-close"></div>
-                <div class="modal-card">
-                    <header class="modal-card-head">
-                        <p class="modal-card-title">
-                            <strong>Detail Booking List</strong>
-                        </p>
-                        <button class="delete jb-modal-close" aria-label="close"></button>
-                    </header>
-                    <section class="modal-card-body">
-                        <div class="columns is-mobile">
-                            <div class="column has-text-weight-bold">
-                                Kode Booking
-                            </div>
-                            <div id="kode" class="column"></div>
-                        </div>
-                        <div class="columns is-mobile">
-                            <div class="column has-text-weight-bold">
-                                Nama Pengunjung
-                            </div>
-                            <div id="nama" class="column"></div>
-                        </div>
-                        <div class="columns is-mobile">
-                            <div class="column has-text-weight-bold">
-                                NIK
-                            </div>
-                            <div id="nik" class="column"></div>
-                        </div>
-                        <div class="columns is-mobile">
-                            <div class="column has-text-weight-bold">
-                                Ruangan
-                            </div>
-                            <div id="room" class="column"></div>
-                        </div>
-                        <div class="columns is-mobile">
-                            <div class="column has-text-weight-bold">
-                                Tanggal Berkunjung
-                            </div>
-                            <div id="tglber" class="column"></div>
-                        </div>
-                        <div class="columns is-mobile">
-                            <div class="column has-text-weight-bold">
-                                Keperluan
-                            </div>
-                            <div id="keperluan" class="column"></div>
-                        </div>
-                        <div class="columns is-mobile">
-                            <div class="column has-text-weight-bold">
-                                Tanggal Booking
-                            </div>
-                            <div id="tglbook" class="column"></div>
-                        </div>
-                    </section>
-                    <footer class="modal-card-foot is-centered">
-                        <button class="button is-primary jb-modal-close">OK</button>
-                    </footer>
-                </div>
-            </div>
-            <!-- Scripts below are for demo only -->
             <script
                 type="text/javascript"
                 src="{{ URL::asset('adminsrc/js/main.min.js') }}"></script>
@@ -349,16 +241,7 @@
                 rel="stylesheet"
                 href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
             <script>
-                function detail(vari) {
-                    $("#kode").html($(vari).attr("data-kode"));
-                    $("#nama").html($(vari).attr("data-nama"));
-                    $("#nik").html($(vari).attr("data-nik"));
-                    $("#room").html($(vari).attr("data-room"));
-                    $("#tglber").html($(vari).attr("data-tgl"));
-                    $("#keperluan").html($(vari).attr("data-keperluan"));
-                    $("#tglbook").html($(vari).attr("data-book"));
-                    $("#detail-modal").addClass("is-active");
-                }
+               
             </script>
         </body>
     </html>

@@ -5,6 +5,7 @@
         data-id="{{$item->id}}"
         data-name="{{$item->room_name}}"
         data-cap ="{{$item->cap}}"
+        data-capfull ="{{$item->kapasitas}}"
         onclick="book(this)">
         <div class="tile is-ancestor">
             <div class="tile is-4 is-parent">
@@ -55,7 +56,12 @@
             <div id="wrap">
                 <div class="columns is-mobile">
                     <div class="column is-10">
-                        <input class="input" type="text" placeholder="NIK">
+                        <input class="input nikgroup" type="text" name="nikgroup[]" value="{{auth()->user()->nik}}" placeholder="NIK" maxlength="16" readonly>
+                    </div>
+                </div>
+                <div class="columns is-mobile">
+                    <div class="column is-10">
+                        <input id="nik2" class="input nikgroup" type="text" name="nikgroup[]" placeholder="NIK" maxlength="16">
                     </div>
                     <div class="column">
                         <button id="add" class="button sec">
@@ -68,7 +74,7 @@
             </div>
             <div class="columns">
                 <div class="column">
-                    <button id="primarytechno" class="button is-primary">Book</button>
+                    <button id="primarytechno" class="button bookgroup is-primary">Book</button>
                     <button id="closegroup" class="button text is-primary">Cancel</button>
                 </div>
             </div>
@@ -106,6 +112,9 @@
                 denyButtonColor: '#d8e3f8',
                 cancelButtonColor: '#ffffff'
             })
+            if (cap == "1"){
+                $(".swal2-deny").css("display", "none");
+            }
             $(".swal2-confirm").click(function () {
                 $.ajax({
                     type: "get",
@@ -139,21 +148,88 @@
                 $("#group").addClass("is-active");
                 $("#closegroup").click(function(){
                     $("#group").removeClass("is-active");
+                    $(".par").remove();
+                    $("#nik2").val("");
+                    x = 2;
+                    location.reload();
                 });
                 $(".modal-background").click(function(){
                     $("#group").removeClass("is-active");
                     $(".par").remove();
+                    $("#nik2").val("");
+                    x = 2;
+                    location.reload();
                 });
+                if (cap != ""){
+                    var maxnik = cap;
+                } else {
+                    var maxnik = $(val).attr("data-capfull");
+                }
+                var x = 2;
+                $("#add").click(function(e){
+                    e.preventDefault();
+                    if (x < maxnik){
+                        x++;
+                        $("#wrap").append('<div class="columns par is-mobile"><div class="column is-10"><input class="input" name="nikgroup[]" type="text" placeholder="NIK" maxlength="16"></div><div class="column"><button id="rem" class="button err"><span class="material-symbols-outlined">close</span></button></div></div>');
+                    }
+                    $(".err").click(function(e){
+                        e.preventDefault();
+                        $(this).parent("div").parent("div").remove();
+                        x--;
+                        if (x < 2){
+                            x = 2;
+                        }
+                    });
+                });
+                function forceNumeric(){
+                    var $input = $(this);
+                    $input.val($input.val().replace(/[^\d]+/g,''));
+                }
+                $('#group').on('propertychange input', 'input[type="text"]', forceNumeric);
             });
         }
-    }
-
-    $("#add").click(function(){
-        $("#wrap").append('<div class="columns par is-mobile"><div class="column is-10"><input class="input" type="text" placeholder="NIK"></div><div class="column"><button id="rem" class="button err"><span class="material-symbols-outlined">close</span></button></div></div>');
-        $(".err").click(function(){
-            $(this).parent("div").parent("div").remove();
+        
+        $(".bookgroup").click(function(){
+            var nikgroup = [];
+            $('input[name="nikgroup[]"]').each( function() {
+                nikgroup.push(this.value);
+            });
+            $.ajax({
+                type: "get",
+                url: "{{url('bookinggroup')}}",
+                data: {
+                    nikgroup: nikgroup,
+                    keperluan: $("#keperluan").val(),
+                    tgl: $("#tgl").val(),
+                    id_room: $(val).attr("data-id")
+                },
+                success: function(data){
+                    if (data == "already book") {
+                        Swal.fire(
+                            {title: 'Ooops...', text: 'Anda atau teman anda sudah melakukan booking', icon: 'error', confirmButtonColor: '#2c598d'}
+                        )
+                    } else if (data == "not found nik") {
+                        Swal.fire(
+                            {title: 'Ooops...', text: 'NIK belum terdaftar', icon: 'error', confirmButtonColor: '#2c598d'}
+                        )
+                    } else if (data == "duplicate") {
+                        Swal.fire(
+                            {title: 'Error', text: 'NIK tidak boleh sama', icon: 'error', confirmButtonColor: '#2c598d'}
+                        )
+                    } else {
+                        Swal.fire({
+                            title: data,
+                            text: 'Silahkan check riwayat',
+                            icon: 'success',
+                            confirmButtonColor: '#2c598d'
+                        }).then((result) => {
+                            location.reload();
+                        })
+                    }
+                }
+            });
         });
-    });
+    }
 </script>
 <link
     rel="stylesheet"

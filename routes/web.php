@@ -46,6 +46,8 @@ Route::middleware(['user'])->group(function () {
     Route::get('/book', [BookingController::class,'index'])->name('book');
     Route::get('/search', [BookingController::class,'search'])->name('search');
     Route::get('/booking', [BookingController::class,'booking'])->name('booking');
+    Route::get('/bookinggroup', [BookingController::class,'bookinggroup'])->name('bookinggroup');
+    Route::get('/cancelbook/{id}', [BookingController::class,'cancelbook'])->name('cancelbook');
 });
 
 /* Admin */
@@ -60,6 +62,9 @@ Route::middleware(['admin'])->group(function () {
     Route::post('/updateroom/{id}', [RoomController::class,'updateroom'])->name('updateroom');
     Route::get('/deleteroom/{id}', [RoomController::class,'deleteroom'])->name('deleteroom');
     Route::get('/bookinglist', [BookingController::class,'bookinglist'])->name('bookinglist');
+    Route::get('/dashboard', function () {
+        return view('admin/dashboard');
+    });
 });
 
 /* User Inactive */

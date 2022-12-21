@@ -77,7 +77,7 @@
                 <div class="menu is-menu-main">
                     <ul class="menu-list">
                         <li>
-                            <a href="index.html" class="has-icon">
+                            <a href="/dashboard" class="has-icon">
                                 <span class="icon">
                                     <i class="mdi mdi-desktop-mac"></i>
                                 </span>

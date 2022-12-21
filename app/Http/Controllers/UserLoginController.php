@@ -33,7 +33,7 @@ class UserLoginController extends Controller
         $credentials = $request->only('nik','password');
  
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('cmsuser');
+            return redirect()->intended('dashboard');
         }else{
             Alert::error('Error', 'Try Again')->showConfirmButton('OK', '#2c598d');
             return redirect()->intended('admin');

@@ -17,9 +17,9 @@ class UserAccountController extends Controller
      */
     public function listuser()
     {
-        $user = User::where('nik', '!=', 'admin')->where('validasi', 'wait')->get();
-        $userac = User::where('nik', '!=', 'admin')->where('validasi', 'valid')->get();
-        $userinac = User::where('nik', '!=', 'admin')->where('validasi', 'reject')->get();
+        $user = User::where('nik', '!=', 'admin')->where('validasi', 'wait')->orderBy('created_at','desc')->get();
+        $userac = User::where('nik', '!=', 'admin')->where('validasi', 'valid')->orderBy('created_at','desc')->get();
+        $userinac = User::where('nik', '!=', 'admin')->where('validasi', 'reject')->orderBy('created_at','desc')->get();
         return view('admin/cmsuser', compact('user','userac','userinac'));
     }
 
@@ -50,7 +50,11 @@ class UserAccountController extends Controller
     {
         $countnik = User::where('nik',$request->nik)->count();
         $countem = User::where('email',$request->email)->count();
-        $insertkeahlian = join(',',$request->keahlian);
+        if (!empty($request->other)){
+            $insertkeahlian = join(',',$request->keahlian).','.$request->keahlianother;
+        } else {
+            $insertkeahlian = join(',',$request->keahlian);
+        }
 
         if($request->profesi == "other"){
             $profesi = $request->profesiother;
@@ -112,7 +116,11 @@ class UserAccountController extends Controller
         $user = User::findorfail($id);
         $countnik = User::where('nik',$request->nik)->count();
         $countem = User::where('email',$request->email)->count();
-        $insertkeahlian = join(',',$request->keahlian);
+        if (!empty($request->other)){
+            $insertkeahlian = join(',',$request->keahlian).','.$request->keahlianother;
+        } else {
+            $insertkeahlian = join(',',$request->keahlian);
+        }
 
         if($request->profesi == "other"){
             $profesi = $request->profesiother;

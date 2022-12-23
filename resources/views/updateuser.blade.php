@@ -211,7 +211,7 @@
                                                 class="check"
                                                 value="Lainnya"
                                                 onclick="checkThis()"
-                                                name="keahlian[]">
+                                                name="other">
                                             Lainnya
                                         </label>
                                     </div>
@@ -437,6 +437,14 @@
                         {title: 'Error!', text: 'Data diri tidak boleh kosong', icon: 'error', confirmButtonText: 'Close', confirmButtonColor: '#2c598d'}
                     );
                     e.preventDefault();
+                }
+                if ($("#lain").prop('checked') == true){
+                    if (!$("#skla").val()){
+                        Swal.fire(
+                            {title: 'Error!', text: 'Data diri tidak boleh kosong', icon: 'error', confirmButtonText: 'Close', confirmButtonColor: '#2c598d'}
+                        );
+                        e.preventDefault();
+                    }
                 }
             });
         </script>

@@ -3,6 +3,7 @@
     lang="en"
     class="has-aside-left has-aside-mobile-transition has-navbar-fixed-top has-aside-expanded">
     <head>
+        <link rel="shortcut icon" href="https://i.ibb.co/TrwLnwM/justlogo.png" />
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -172,7 +173,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->nik}}" readonly="readonly">
+                                                <input class="input" type="text" value="{{$item->nik}}" style="border:none;" readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -186,7 +187,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->name}}" readonly="readonly">
+                                                <input class="input" type="text" value="{{$item->name}}" style="border:none;" readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -200,7 +201,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->email}}" readonly="readonly">
+                                                <input class="input" type="text" value="{{$item->email}}" style="border:none;" readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -214,7 +215,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->phone}}" readonly="readonly">
+                                                <input class="input" type="text" value="{{$item->phone}}" style="border:none;" readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -228,7 +229,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->profesi}}" readonly="readonly">
+                                                <input class="input" type="text" value="{{$item->profesi}}" style="border:none;" readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -246,6 +247,7 @@
                                                     class="input"
                                                     type="text"
                                                     value="{{$item->institusi}}"
+                                                    style="border:none;"
                                                     readonly="readonly">
                                             </p>
                                         </div>
@@ -264,6 +266,7 @@
                                                     class="input"
                                                     type="text"
                                                     value="{{$item->nama_institusi}}"
+                                                    style="border:none;"
                                                     readonly="readonly">
                                             </p>
                                         </div>
@@ -278,7 +281,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <input class="input" type="text" value="{{$item->alamat}}" readonly="readonly">
+                                                <input class="input" type="text" value="{{$item->alamat}}" style="border:none;" readonly="readonly">
                                             </p>
                                         </div>
                                     </div>
@@ -296,6 +299,7 @@
                                                     class="input"
                                                     type="text"
                                                     value="{{str_replace(',',', ',$item->keahlian)}}"
+                                                    style="border:none;"
                                                     readonly="readonly">
                                             </p>
                                         </div>
@@ -310,7 +314,7 @@
                                     <div class="field">
                                         <div class="control">
                                             <p class="control">
-                                                <img src="{{asset('storage/img/ktp/'.$item->foto_ktp)}}">
+                                                <img src="{{asset('storage/img/ktp/'.$item->foto_ktp)}}" style="max-height:250px;">
                                             </p>
                                         </div>
                                     </div>

@@ -3,6 +3,7 @@
     lang="en"
     class="has-aside-left has-aside-mobile-transition has-navbar-fixed-top has-aside-expanded">
     <head>
+        <link rel="shortcut icon" href="https://i.ibb.co/TrwLnwM/justlogo.png" />
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -326,7 +327,9 @@
                                         placeholder="Nama Ruangan"
                                         class="input"
                                         required="required"
-                                        name="room_name">
+                                        maxlength="25"
+                                        name="room_name"
+                                        id="room_name">
                                 </div>
                             </div>
                             <div class="field">
@@ -338,6 +341,7 @@
                                         class="input"
                                         required="required"
                                         name="kapasitas"
+                                        maxlength="4"
                                         id="roomcap">
                                 </div>
                             </div>
@@ -350,7 +354,7 @@
                                             accept="image/*"
                                             class="file-input"
                                             type="file"
-                                            name="room_photo"
+                                            name="room_photo[]"
                                             required="required">
                                         <span class="file-cta">
                                             <span class="file-icon">
@@ -362,8 +366,14 @@
                                         </span>
                                         <span class="file-name"></span>
                                     </label>
+                                    <span id="addmore" class="button is-primary" type="button" style="background-color:#d8e3f8;color:#111c2b; margin-left:0.5rem;">
+                                        <span class="icon">
+                                            <i class="mdi mdi-plus"></i>
+                                        </span>
+                                    </span>
                                 </div>
                             </div>
+                            <div id="wrap"></div>
                         </section>
                         <footer class="modal-card-foot">
                             <button class="button jb-modal-close">Cancel</button>
@@ -400,12 +410,6 @@
                                 Status
                             </div>
                             <div id="status" class="column"></div>
-                        </div>
-                        <div class="columns is-mobile">
-                            <div class="column has-text-weight-bold">
-                                Photo
-                            </div>
-                            <div id="photo" class="column"></div>
                         </div>
                     </section>
                     <footer class="modal-card-foot is-centered">
@@ -444,7 +448,67 @@
                             $(".file-name").html("");
                         }
                     });
+                    $(".jb-modal-close").click(function(){
+                        $("#room_name").val(null);
+                        $("#roomcap").val(null);
+                        $("#roomphoto").val(null);
+                        $(".file-name").html("");
+                    });
                 }
+                var x = 1;
+                $("#addmore").click(function(e){
+                    e.preventDefault();
+                    if (x < 4){
+                        x++;
+                        $("#wrap").append('<div class="field"> <div class="file has-name"> <label class="file-label"> <input id="roomphoto'+x+'" accept="image/*" class="file-input" type="file" name="room_photo[]" required="required"> <span class="file-cta"> <span class="file-icon"> <i class="mdi mdi-upload"></i> </span> <span class="file-label"> Choose a file… </span> </span> <span class="file-name"></span> </label> <span class="delmore button is-primary" type="button" style="background-color:#ffdad6;color:#111c2b; margin-left:0.5rem;"> <span class="icon"> <i class="mdi mdi-minus"></i> </span> </span> </div> </div>');
+                    }
+                    $(".file-input").change(function () {
+                        var fileExtension = ['jpeg', 'jpg', 'png'];
+                        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                            Swal.fire(
+                                {title: 'Tolong upload file gambar', icon: 'error', confirmButtonColor: '#2c598d'}
+                            );
+                            $(this).val(null);
+                            $(this).closest(".file-name").html("");
+                        }
+                    });
+                    document
+                        .getElementById('roomphoto2')
+                        .onchange = function () {
+                            document
+                                .getElementsByClassName("file-name")[1]
+                                .textContent = this
+                                .files[0]
+                                .name;
+                        };
+                    document
+                        .getElementById('roomphoto3')
+                        .onchange = function () {
+                            document
+                                .getElementsByClassName("file-name")[2]
+                                .textContent = this
+                                .files[0]
+                                .name;
+                        };
+                    document
+                        .getElementById('roomphoto4')
+                        .onchange = function () {
+                            document
+                                .getElementsByClassName("file-name")[3]
+                                .textContent = this
+                                .files[0]
+                                .name;
+                        };
+                });
+                $("#wrap").on("click",".delmore", function(e){
+		            e.preventDefault();
+                    $(this).parent('div').parent('div').remove(); 
+                    x--;
+	            });
+                $(".jb-modal-close").click(function(){
+                    $("#wrap").empty();
+                    x = 1;
+                });
 
                 function deleteModal(val) {
                     var id = $(val).attr("data-id");
@@ -467,7 +531,7 @@
                     var name = $(that).attr("data-name");
                     $("#room-name").html($(that).attr("data-roomname"));
                     $("#capacity").html($(that).attr("data-capacity"));
-                    $("#status").html($(that).attr("data-status"));
+                    $("#status").css('textTransform', 'capitalize').html($(that).attr("data-status"));
                     $("#detail-modal").addClass("is-active");
                 }
 

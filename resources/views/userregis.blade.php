@@ -70,6 +70,7 @@
                                             type="text"
                                             placeholder="Nama Lengkap"
                                             class="input"
+                                            maxlength="50"
                                             required="required"
                                             name="name">
                                     </div>
@@ -94,8 +95,8 @@
                                             class="input"
                                             required="required"
                                             name="phone"
-                                            minlength="11"
-                                            maxlength="16"
+                                            minlength="10"
+                                            maxlength="14"
                                             id="intTelp">
                                     </div>
                                 </div>
@@ -204,7 +205,7 @@
                                                 class="check"
                                                 value="Lainnya"
                                                 onclick="checkThis()"
-                                                name="keahlian[]">
+                                                name="other">
                                             Lainnya
                                         </label>
                                     </div>
@@ -427,9 +428,17 @@
             $('#regis').on('submit', function (e) {
                 if ($('input[class^="check"]:checked').length === 0) {
                     Swal.fire(
-                        {title: 'Error!', text: 'Data diri tidak boleh kosong', icon: 'error', confirmButtonText: 'Close', confirmButtonColor: '#2c598d'}
+                        {title: 'Error!', text: 'Keahlian tidak boleh kosong', icon: 'error', confirmButtonText: 'Close', confirmButtonColor: '#2c598d'}
                     );
                     e.preventDefault();
+                }
+                if ($("#lain").prop('checked') == true){
+                    if (!$("#skla").val()){
+                        Swal.fire(
+                            {title: 'Error!', text: 'Data diri tidak boleh kosong', icon: 'error', confirmButtonText: 'Close', confirmButtonColor: '#2c598d'}
+                        );
+                        e.preventDefault();
+                    }
                 }
             });
         </script>

@@ -3,6 +3,7 @@
     lang="en"
     class="has-aside-left has-aside-mobile-transition has-navbar-fixed-top has-aside-expanded">
     <head>
+        <link rel="shortcut icon" href="https://i.ibb.co/TrwLnwM/justlogo.png" />
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -178,20 +179,20 @@
                                     <span>Waiting</span>
                                 </a>
                             </li>
-                            <li id="inactive">
-                                <a href="#inactive" onclick="switchToInactive()">
-                                    <span class="icon is-small">
-                                        <i class="mdi mdi-close-circle" aria-hidden="true"></i>
-                                    </span>
-                                    <span>Inactive</span>
-                                </a>
-                            </li>
                             <li id="active">
                                 <a href="#active" onclick="switchToActive()">
                                     <span class="icon is-small">
                                         <i class="mdi mdi-check-circle" aria-hidden="true"></i>
                                     </span>
-                                    <span>Active</span>
+                                    <span>Approved</span>
+                                </a>
+                            </li>
+                            <li id="inactive">
+                                <a href="#inactive" onclick="switchToInactive()">
+                                    <span class="icon is-small">
+                                        <i class="mdi mdi-close-circle" aria-hidden="true"></i>
+                                    </span>
+                                    <span>Rejected</span>
                                 </a>
                             </li>
                         </ul>

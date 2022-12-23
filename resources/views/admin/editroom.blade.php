@@ -3,6 +3,8 @@
     lang="en"
     class="has-aside-left has-aside-mobile-transition has-navbar-fixed-top has-aside-expanded">
     <head>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link rel="shortcut icon" href="https://i.ibb.co/TrwLnwM/justlogo.png" />
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,8 +24,46 @@
             type="text/css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
     </head>
     <style>
+        .lds-dual-ring {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -50px 0 0 -50px;
+        }
+        .lds-dual-ring:after {
+            content: " ";
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border-radius: 50%;
+            border: 6px solid #fff;
+            border-color: #fff transparent #fff transparent;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        #overlay {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            top: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
         .tabs li.is-active a {
             border-bottom-color: #2c598d;
             color: #2c598d;
@@ -31,8 +71,33 @@
         #primarytechno {
             background-color: #2c598d;
         }
+        .splide__slide img {
+            width: 100%;
+            height: auto;
+        }
+        .switch[type=checkbox]:checked+label::before, .switch[type=checkbox]:checked+label:before {
+            background: #2c598d;
+        }
+        .button.is-primary {
+            background-color: #2c598d;
+        }
+        .button.is-primary:hover {
+            background-color: #234771;
+        }
+        .splide__pagination__page {
+            background: #d3e3ff;
+        }
+        .splide__pagination__page.is-active {
+            background: #1860a5;
+        }
+        .editphoto>input {
+            display: none;
+        }
     </style>
     <body>
+        <div id="overlay" hidden>
+            <div class="lds-dual-ring"></div>
+        </div>
         @include('sweetalert::alert')
         <div id="app">
             <nav id="navbar-main" class="navbar is-fixed-top">
@@ -224,7 +289,7 @@
                                         <hr>
                                         <div class="field is-horizontal">
                                             <div class="field-label is-normal">
-                                                <label class="label">Photo</label>
+                                                <label class="label">Add Photo</label>
                                             </div>
                                             <div class="field-body">
                                                 <div class="field">
@@ -274,11 +339,37 @@
                             </div>
                         </div>
                         <div class="tile is-6 is-parent">
-                            <div class="card tile is-child">
+                            <div class="card tile is-child" style="background-color:rgba(0,0,0,0);border:none">
                                 <div class="card-content p-0">
-                                    <span class="is-centered">
-                                        <img src="{{asset('storage/img/room/'.$item->photo)}}">
-                                    </span>
+                                    <section id="image-carousel" class="splide" aria-label="Beautiful Images">
+                                        <div class="splide__track">
+                                            <ul class="splide__list">
+                                                @foreach ($roomphoto as $photo)
+                                                <li class="splide__slide">
+                                                    <img src="{{asset('storage/img/room/'.$photo->photo)}}" alt="">
+                                                    <a data-photo="{{$photo->id}}" class="edit" onclick="editphoto(this)">
+                                                    <label for="editphoto" style="cursor:pointer;">
+                                                    <span class="icon" style="color:#6d5677;">
+                                                        <i class="mdi mdi-24px mdi-pencil"></i>
+                                                    </span>
+                                                    </label>
+                                                    </a>
+                                                    <input
+                                                        accept="image/*"
+                                                        id="editphoto"
+                                                        class="editphoto"
+                                                        type="file"
+                                                        name="editphoto" style="display:none;">
+                                                    <a class="deletephoto">
+                                                    <span class="icon" style="color:#ba1a1a;">
+                                                        <i class="mdi mdi-24px mdi-trash-can"></i>
+                                                    </span>
+                                                    </a>
+                                                </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </section>
                                 </div>
                             </div>
                         </div>
@@ -288,7 +379,7 @@
                             <div class="level">
                                 <div class="level-left">
                                     <div class="level-item">
-                                        © 2022, Visit techno Project
+                                        © 2022, Visit Techno Project
                                     </div>
                                 </div>
                             </div>
@@ -412,6 +503,57 @@
                 },
                 "Masukan jumlah kapasitas yang sesuai"
             );
-                </script>
-            </body>
-        </html>
+
+            document.addEventListener( 'DOMContentLoaded', function () {
+                new Splide( '#image-carousel' ).mount();
+            } );
+
+            function editphoto(that){
+                $(".editphoto").change(function(){
+                    var fileExtension = ['jpeg', 'jpg', 'png'];
+                    if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                        Swal.fire(
+                            {title: 'Tolong upload file gambar', icon: 'error', confirmButtonColor: '#2c598d'}
+                        ).then((result) => {
+                            location.reload();
+                        });
+                    } else {
+                        alert("Proses upload foto...");
+                        var id = $(that).attr("data-photo");
+                        var myFormData = new FormData();
+                        myFormData.append('editphoto', $('#editphoto').prop('files')[0]);
+                        myFormData.append('id', id);
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                        $.ajax({
+                            type: "post",
+                            url: "/editphoto/"+id,
+                            data: myFormData,
+                            processData: false,
+                            contentType: false,
+                            beforeSend: function () {
+                                $("#overlay").show();
+                            },
+                            success: function (data){
+                                location.reload();    
+                            }
+                        });
+                    }
+                });
+            }
+
+            $(".editphoto").change(function () {
+                var fileExtension = ['jpeg', 'jpg', 'png'];
+                if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                    Swal.fire(
+                        {title: 'Tolong upload file gambar', icon: 'error', confirmButtonColor: '#2c598d'}
+                    );
+                    $(this).val(null);
+                }
+            });
+            </script>
+        </body>
+    </html>

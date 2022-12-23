@@ -62,6 +62,7 @@ Route::middleware(['admin'])->group(function () {
     Route::post('/updateroom/{id}', [RoomController::class,'updateroom'])->name('updateroom');
     Route::get('/deleteroom/{id}', [RoomController::class,'deleteroom'])->name('deleteroom');
     Route::get('/bookinglist', [BookingController::class,'bookinglist'])->name('bookinglist');
+    Route::post('/editphoto/{id}', [RoomController::class,'editphoto'])->name('editphoto');
     Route::get('/dashboard', function () {
         return view('admin/dashboard');
     });

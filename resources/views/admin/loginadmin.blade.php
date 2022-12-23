@@ -66,7 +66,8 @@
                                             class="input"
                                             maxlength="16"
                                             required="required"
-                                            name="nik">
+                                            name="nik"
+                                            onkeyup="validate(this)">
                                     </div>
                                 </div>
                                 <div class="field">
@@ -122,10 +123,22 @@
         }
 
         var loading = document.getElementById("primarytechno");
-        loading.onclick = function () {
-            loading
-                .classList
-                .add("is-loading");
+        function validate(obj) {
+            if (obj.value.length > 0) {
+                loading.onclick = function () {
+                    document
+                        .getElementById("primarytechno")
+                        .classList
+                        .add("is-loading");
+                }
+            } else {
+                loading.onclick = function () {
+                    document
+                        .getElementById("primarytechno")
+                        .classList
+                        .remove("is-loading");
+                }
+            }
         }
 
         var swal = document.getElementsByClassName("swal2-confirm");

@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Room;
+use App\Models\Photo;
 use RealRashid\SweetAlert\Facades\Alert;
 use File;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class RoomController extends Controller
 {
@@ -23,7 +26,9 @@ class RoomController extends Controller
     public function showroom($id)
     {
         $roomdata = Room::where('id', $id)->get();
-        return view('admin/editroom', compact('roomdata'));
+        $roomphoto = Photo::join('mst_room','photo_room.id_room','mst_room.id')->where('mst_room.id', $id)
+            ->select('photo_room.*')->get();
+        return view('admin/editroom', compact('roomdata','roomphoto'));
     }
 
     /**
@@ -44,14 +49,6 @@ class RoomController extends Controller
      */
     public function addroom(Request $request)
     {
-        $this->validate($request, [
-            'room_photo' => 'mimes:jpeg,png,bmp,tiff |max:4096',
-        ],
-            $messages = [
-                'required' => 'The :attribute field is required.',
-                'mimes' => 'Only jpeg, png, bmp,tiff are allowed.'
-            ]
-        );
         $count = Room::where('room_name','like','%'.$request->room_name.'%')->count();
         if(!$count > 0){
             $newroom = Room::create([
@@ -60,11 +57,15 @@ class RoomController extends Controller
                 'status'=>"active",
                 'photo'=>"null"
             ]);
-            $photo = $request->file('room_photo')->extension();
-            $newPhoto = $newroom->id.'_'.date_format($newroom->updated_at,"YmdHis").'.'.$photo;
-            $request->file('room_photo')->storeAs('public/img/room/', $newPhoto);
-            $addphoto = Room::findorfail($newroom->id);
-            $addphoto->update(array('photo' => $newPhoto));
+            foreach($request->room_photo as $key => $value){
+                $photo = $request->file('room_photo')[$key]->extension();
+                $newPhoto = $newroom->id.$key.'_'.date_format($newroom->updated_at,"YmdHis").'.'.$photo;
+                $request->file('room_photo')[$key]->storeAs('public/img/room/', $newPhoto);
+                DB::table('photo_room')->insert([
+                    'id_room'=>$newroom->id,
+                    'photo'=>$newPhoto
+                ]);
+            }
             Alert::toast('Success Add Room', 'success');
         } else {
             Alert::toast('Ruangan sudah ada', 'error');
@@ -131,6 +132,17 @@ class RoomController extends Controller
             Alert::error('Error', 'Nama ruangan sudah ada')->showConfirmButton('OK', '#2c598d');;
             return back();
         }
+    }
+
+    public function editphoto(Request $request, $id){
+        $currentTime = Carbon::now();
+        $PhotoRoom = Photo::findorfail($id);
+        $ext = $request->file('editphoto')->extension();
+        $newPhoto = $PhotoRoom->id_room.'update_'.date_format($currentTime,"YmdHis").'.'.$ext;
+        $request->file('editphoto')->storeAs('public/img/room/',$newPhoto);
+        $PhotoRoom->update(array('photo' => $newPhoto));
+        Alert::toast('Success Update', 'success');
+        return redirect('cmsroom');
     }
 
     /**

@@ -18,7 +18,6 @@
             href="https://fonts.googleapis.com/css?family=Nunito"
             rel="stylesheet"
             type="text/css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     </head>
     <style>
         .tabs li.is-active a {
@@ -71,7 +70,8 @@
             background-color: #234771;
         }
     </style>
-    <body>
+    <body>  
+        @include('admin/swaljs')
         @include('sweetalert::alert')
         <div id="app">
             <nav id="navbar-main" class="navbar is-fixed-top">
@@ -120,7 +120,7 @@
                                 <span class="icon">
                                     <i class="mdi mdi-desktop-mac"></i>
                                 </span>
-                                <span class="menu-item-label">Dashboard</span>
+                                <span class="menu-item-label">Home</span>
                             </a>
                         </li>
                     </ul>
@@ -145,12 +145,35 @@
                         </li>
                     </ul>
                     <ul class="menu-list">
-                        <li>
-                            <a href="/bookinglist" class="is-active has-icon">
-                                <span class="icon">
-                                    <i class="mdi mdi-view-list"></i>
-                                </span>
+                        <li id="dropDown" class="is-active">
+                            <a class="has-icon has-dropdown-icon is-active">
+                                <span class="icon"><i class="mdi mdi-view-list"></i></span>
                                 <span class="menu-item-label">Booking List</span>
+                                <div class="dropdown-icon">
+                                    <span class="icon"><i class="mdi mdi-arrow-down-drop-circle"></i></span>
+                                </div>
+                            </a>
+                            <ul>
+                                <li>
+                                    <a href="/bookinglist" class="is-active">
+                                        <span>Booking Hari Ini</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/allbooking">
+                                        <span>Semua Booking</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="/review" class="has-icon">
+                                <span class="icon">
+                                    <i class="mdi mdi-book"></i>
+                                </span>
+                                <span class="menu-item-label">Review</span>
                             </a>
                         </li>
                     </ul>
@@ -163,6 +186,7 @@
                             <ul>
                                 <li>Admin</li>
                                 <li>Booking List</li>
+                                <li>Booking Hari Ini</li>
                             </ul>
                         </div>
                     </div>
@@ -174,7 +198,7 @@
                         <div class="level-left">
                             <div class="level-item">
                                 <h1 class="title">
-                                    Booking List
+                                    Booking Hari Ini
                                 </h1>
                             </div>
                         </div>
@@ -185,45 +209,236 @@
                 </div>
             </section>
             <section class="section is-main-section">
+            <input  id="search" class="search input mb-3" type="text" placeholder="Search" style="max-width:25vw;">
                 <div class="card has-table">
-                    <header class="card-header">
-                        <p class="card-header-title">
-                            <span class="icon">
-                                <i class="mdi mdi-view-list"></i>
-                            </span>
-                            Booking List
-                        </p>
-                    </header>
+                    <div id="tab-checking" class="tabs is-boxed mb-0">
+                        <ul>
+                        <li id="waiting" class="is-active">
+                            <a href="#waiting" onclick="switchToWaiting()">
+                                <span class="icon is-small">
+                                    <i class="mdi mdi-clock" aria-hidden="true"></i>
+                                </span>
+                                <span>Menunggu</span>
+                            </a>
+                        </li>
+                        <li id="checkin">
+                            <a href="#checkin" onclick="switchToCheckin()">
+                                <span class="icon is-small">
+                                    <i class="mdi mdi-check-circle" aria-hidden="true"></i>
+                                </span>
+                                <span>Masuk</span>
+                            </a>
+                        </li>
+                        <li id="selesai">
+                            <a href="#selesai" onclick="switchToSelesai()">
+                                <span class="icon is-small">
+                                    <i class="mdi mdi-clock-check" aria-hidden="true"></i>
+                                </span>
+                                <span>Selesai</span>
+                            </a>
+                        </li>
+                        <li id="pending">
+                            <a href="#pending" onclick="switchToPending()">
+                                <span class="icon is-small">
+                                    <i class="mdi mdi-clock-alert" aria-hidden="true"></i>
+                                </span>
+                                <span>Proses</span>
+                            </a>
+                        </li>
+                        <li id="expired">
+                            <a href="#expired" onclick="switchToExpired()">
+                                <span class="icon is-small">
+                                    <i class="mdi mdi-close-circle" aria-hidden="true"></i>
+                                </span>
+                                <span>Kedaluwarsa</span>
+                            </a>
+                        </li>
+                    </ul>
+                    </div>
                     <div class="card-content">
                         <div class="b-table has-pagination">
                             <div class="table-wrapper has-mobile-cards">
-                                <table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+                                <table id="initbooking" class="table is-fullwidth is-striped is-hoverable is-fullwidth">
                                     <thead>
                                         <tr>
                                             <th>Nama Pengunjung</th>
                                             <th>Ruangan</th>
                                             <th>Keperluan</th>
                                             <th>Tanggal Berkunjung</th>
+                                            <th>Status</th>
                                             <th class="has-text-right">Detail</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="waiting-booklist">
                                         @foreach($bookinglist as $data)
                                         <tr>
                                             <td data-label="Nama Pengunjung">{{$data->name}}</td>
                                             <td data-label="Ruangan">{{$data->room_name}}</td>
                                             <td data-label="Keperluan">{{$data->keperluan}}</td>
                                             <td data-label="Tanggal Berkunjung">{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}</td>
+                                            <td data-label="Status"><span class="tag is-white">Menunggu</span></td>
                                             <td class="is-actions-cell">
                                                 <div class="buttons is-right">
                                                     <button
                                                         class="button is-small is-primary"
                                                         type="button"
+                                                        data-id="{{$data->id}}"
                                                         data-kode="{{$data->kode_booking}}"
                                                         data-nama="{{$data->name}}"
                                                         data-room="{{$data->room_name}}"
                                                         data-tgl="{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}"
+                                                        data-tanggal="{{$data->tanggal->isoFormat('Y-MM-DD')}}"
+                                                        data-jam_mulai="{{$data->jam_mulai}}"
+                                                        data-jam_selesai="{{$data->jam_selesai}}"
                                                         data-keperluan="{{$data->keperluan}}"
+                                                        data-status="{{$data->status}}"
+                                                        data-book="{{$data->created_at->isoFormat('ddd, DD MMM Y')}}"
+                                                        data-nik="{{$data->nik}}"
+                                                        onclick="detail(this)">
+                                                        <span class="icon">
+                                                            <i class="mdi mdi-eye"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tbody id="checkin-booklist" class="is-hidden">
+                                        @foreach($bookinglistcheck as $data)
+                                        <tr>
+                                            <td data-label="Nama Pengunjung">{{$data->name}}</td>
+                                            <td data-label="Ruangan">{{$data->room_name}}</td>
+                                            <td data-label="Keperluan">{{$data->keperluan}}</td>
+                                            <td data-label="Tanggal Berkunjung">{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}</td>
+                                            <td data-label="Status"><span class="tag is-success">Masuk</span></td>
+                                            <td class="is-actions-cell">
+                                                <div class="buttons is-right">
+                                                    <button
+                                                        class="button is-small is-primary"
+                                                        type="button"
+                                                        data-id="{{$data->id}}"
+                                                        data-kode="{{$data->kode_booking}}"
+                                                        data-nama="{{$data->name}}"
+                                                        data-room="{{$data->room_name}}"
+                                                        data-tgl="{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}"
+                                                        data-tanggal="{{$data->tanggal->isoFormat('Y-MM-DD')}}"
+                                                        data-jam_mulai="{{$data->jam_mulai}}"
+                                                        data-jam_selesai="{{$data->jam_selesai}}"
+                                                        data-keperluan="{{$data->keperluan}}"
+                                                        data-status="{{$data->status}}"
+                                                        data-book="{{$data->created_at->isoFormat('ddd, DD MMM Y')}}"
+                                                        data-nik="{{$data->nik}}"
+                                                        onclick="detail(this)">
+                                                        <span class="icon">
+                                                            <i class="mdi mdi-eye"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tbody id="pending-booklist" class="is-hidden">
+                                        @foreach($bookinglistpending as $data)
+                                        <tr>
+                                            <td data-label="Nama Pengunjung">{{$data->name}}</td>
+                                            <td data-label="Ruangan">{{$data->room_name}}</td>
+                                            <td data-label="Keperluan">{{$data->keperluan}}</td>
+                                            <td data-label="Tanggal Berkunjung">{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}</td>
+                                            <td data-label="Status"><span class="tag is-light">Proses</span></td>
+                                            <td class="is-actions-cell">
+                                                <div class="buttons is-right">
+                                                    <button
+                                                        class="button is-small is-primary"
+                                                        type="button"
+                                                        data-id="{{$data->id}}"
+                                                        data-kode="{{$data->kode_booking}}"
+                                                        data-nama="{{$data->name}}"
+                                                        data-room="{{$data->room_name}}"
+                                                        data-tgl="{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}"
+                                                        data-tanggal="{{$data->tanggal->isoFormat('Y-MM-DD')}}"
+                                                        data-jam_mulai="{{$data->jam_mulai}}"
+                                                        data-jam_selesai="{{$data->jam_selesai}}"
+                                                        data-keperluan="{{$data->keperluan}}"
+                                                        data-status="{{$data->status}}"
+                                                        data-book="{{$data->created_at->isoFormat('ddd, DD MMM Y')}}"
+                                                        data-nik="{{$data->nik}}"
+                                                        onclick="detail(this)">
+                                                        <span class="icon">
+                                                            <i class="mdi mdi-eye"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tbody id="expired-booklist" class="is-hidden">
+                                        @foreach($bookinglistexpired as $data)
+                                        <tr>
+                                            <td data-label="Nama Pengunjung">{{$data->name}}</td>
+                                            <td data-label="Ruangan">{{$data->room_name}}</td>
+                                            <td data-label="Keperluan">{{$data->keperluan}}</td>
+                                            <td data-label="Tanggal Berkunjung">{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}</td>
+                                            <td data-label="Status"><span class="tag is-danger">Kedaluwarsa</span></td>
+                                            <td class="is-actions-cell">
+                                                <div class="buttons is-right">
+                                                    <button
+                                                        class="button is-small is-primary"
+                                                        type="button"
+                                                        data-id="{{$data->id}}"
+                                                        data-kode="{{$data->kode_booking}}"
+                                                        data-nama="{{$data->name}}"
+                                                        data-room="{{$data->room_name}}"
+                                                        data-tgl="{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}"
+                                                        data-tanggal="{{$data->tanggal->isoFormat('Y-MM-DD')}}"
+                                                        data-jam_mulai="{{$data->jam_mulai}}"
+                                                        data-jam_selesai="{{$data->jam_selesai}}"
+                                                        data-keperluan="{{$data->keperluan}}"
+                                                        data-status="{{$data->status}}"
+                                                        data-book="{{$data->created_at->isoFormat('ddd, DD MMM Y')}}"
+                                                        data-nik="{{$data->nik}}"
+                                                        onclick="detail(this)">
+                                                        <span class="icon">
+                                                            <i class="mdi mdi-eye"></i>
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tbody id="selesai-booklist" class="is-hidden">
+                                        @foreach($bookinglistselesai as $data)
+                                        <tr>
+                                            <td data-label="Nama Pengunjung">{{$data->name}}</td>
+                                            <td data-label="Ruangan">{{$data->room_name}}</td>
+                                            <td data-label="Keperluan">{{$data->keperluan}}</td>
+                                            <td data-label="Tanggal Berkunjung">{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}</td>
+                                            <td data-label="Status">
+                                                @if($data->status=='present')
+                                                <span class="tag is-warning">Habis</span>
+                                                @else
+                                                <span class="tag is-info">Selesai</span>
+                                                @endif
+                                            </td>
+                                            <td class="is-actions-cell">
+                                                <div class="buttons is-right">
+                                                    <button
+                                                        class="button is-small is-primary"
+                                                        type="button"
+                                                        data-id="{{$data->id}}"
+                                                        data-kode="{{$data->kode_booking}}"
+                                                        data-nama="{{$data->name}}"
+                                                        data-room="{{$data->room_name}}"
+                                                        data-tgl="{{$data->tanggal->isoFormat('ddd, DD MMM Y')}}"
+                                                        data-tanggal="{{$data->tanggal->isoFormat('Y-MM-DD')}}"
+                                                        data-jam_mulai="{{$data->jam_mulai}}"
+                                                        data-jam_selesai="{{$data->jam_selesai}}"
+                                                        data-keperluan="{{$data->keperluan}}"
+                                                        data-status="{{$data->status}}"
+                                                        data-cekout="{{$data->checkout}}"
                                                         data-book="{{$data->created_at->isoFormat('ddd, DD MMM Y')}}"
                                                         data-nik="{{$data->nik}}"
                                                         onclick="detail(this)">
@@ -237,34 +452,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                            </div>
-                            <?php 
-                                $total = $bookinglist->total();
-                                $page = $bookinglist->perPage();
-                                $current = $bookinglist->currentPage();
-                                $totalpage = ceil($total / $page);
-                            ?>
-                            <div class="notification">
-                                <div class="level">
-                                    <div class="level-left">
-                                        <div class="level-item">
-                                            <div class="buttons has-addons">
-                                                @for($i=1 ; $i <= $totalpage ; $i++)
-                                                @if ($i == $current)
-                                                <a style="text-decoration:none" href="{{$bookinglist->url($i)}}"><button type="button" class="button is-active">{{$i}}</button></a>
-                                                @else
-                                                <a style="text-decoration:none" href="{{$bookinglist->url($i)}}"><button type="button" class="button">{{$i}}</button></a>
-                                                @endif
-                                                @endfor
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="level-right">
-                                        <div class="level-item">
-                                            <small>Page {{$current}} of {{$totalpage}}</small>
-                                        </div>
-                                    </div>
-                                </div>
+                                <table id="table-search" class="table is-fullwidth is-striped is-hoverable is-fullwidth" style="display:none;"></table>
                             </div>
                         </div>
                     </div>
@@ -275,7 +463,7 @@
                     <div class="level">
                         <div class="level-left">
                             <div class="level-item">
-                                © 2022, Visit techno Project
+                                © 2023, Visit techno Project
                             </div>
                         </div>
                     </div>
@@ -324,28 +512,27 @@
                         </div>
                         <div class="columns is-mobile">
                             <div class="column has-text-weight-bold">
+                                Jam
+                            </div>
+                            <div id="jam" class="column"></div>
+                        </div>
+                        <div class="columns is-mobile">
+                            <div class="column has-text-weight-bold">
                                 Keperluan
                             </div>
                             <div id="keperluan" class="column"></div>
                         </div>
-                        <div class="columns is-mobile">
-                            <div class="column has-text-weight-bold">
-                                Tanggal Booking
-                            </div>
-                            <div id="tglbook" class="column"></div>
-                        </div>
                     </section>
                     <footer class="modal-card-foot is-centered">
-                        <button class="button is-primary jb-modal-close">OK</button>
+                        <button class="button is-white jb-modal-close">Close</button>
+                        <button id="cekin" class="button is-primary">Check-In</button>
+                        <button id="cekout" class="button is-primary is-hidden">Check-Out</button>
                     </footer>
                 </div>
             </div>
-            <!-- Scripts below are for demo only -->
             <script
                 type="text/javascript"
                 src="{{ URL::asset('adminsrc/js/main.min.js') }}"></script>
-            <!-- Icons below are for demo only. Feel free to use any icon pack. Docs:
-            https://bulma.io/documentation/elements/icon/ -->
             <link
                 rel="stylesheet"
                 href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
@@ -357,9 +544,107 @@
                     $("#room").html($(vari).attr("data-room"));
                     $("#tglber").html($(vari).attr("data-tgl"));
                     $("#keperluan").html($(vari).attr("data-keperluan"));
-                    $("#tglbook").html($(vari).attr("data-book"));
+                    $("#jam").html($(vari).attr("data-jam_mulai").substring(0,5)+" - "+$(vari).attr("data-jam_selesai").substring(0,5));
+                    var bookingDate = $(vari).attr("data-tanggal");
+                    var bookingTime = $(vari).attr("data-jam_mulai");
+                    var bookingEndTime = $(vari).attr("data-jam_selesai");
+                    var currentDate = new Date().toISOString().split('T')[0];
+                    var currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+                    var status = $(vari).attr("data-status");
+                    var cekout = $(vari).attr("data-cekout");
+                    if (status != "present" && bookingDate == currentDate && bookingTime <= currentTime && bookingEndTime >= currentTime){
+                        $("#cekin").removeClass("is-hidden");
+                    } else {
+                        $("#cekin").addClass("is-hidden");
+                    }
+                    if (status == "present" && bookingEndTime <= currentTime){
+                        $("#cekout").removeClass("is-hidden");
+                    } else{
+                        $("#cekout").addClass("is-hidden");
+                    }
                     $("#detail-modal").addClass("is-active");
+                    $("#cekin").click(function(){
+                        window.location = "/checkin/"+$(vari).attr("data-id");
+                    });
+                    $("#cekout").click(function(){
+                        window.location = "/checkout/"+$(vari).attr("data-id");
+                    });
                 }
+
+                $("#search").keyup(function () {
+                    $.ajax({
+                        type: "get",
+                        url: "{{route('searchbooking')}}",
+                        data: {
+                            search: $("#search").val()
+                        },
+                        success: function (data) {
+                            if(!$("#search").val()){
+                                $("#initbooking").show();
+                                $("#tab-checking").show();
+                                $("#table-search").hide();
+                            } else{
+                                $("#initbooking").hide();
+                                $("#tab-checking").hide();
+                                $("#table-search").html(data);
+                                $("#table-search").show();
+                            }
+                        }
+                    });
+                });
+
+                function removeActive() {
+                    $("li").each(function () {
+                        $(this).removeClass("is-active");
+                    });
+                }
+
+                function hideAll() {
+                    $("#waiting-booklist").addClass("is-hidden");
+                    $("#checkin-booklist").addClass("is-hidden");
+                    $("#pending-booklist").addClass("is-hidden");
+                    $("#expired-booklist").addClass("is-hidden");
+                    $("#selesai-booklist").addClass("is-hidden");
+                }
+
+                function switchToWaiting() {
+                    removeActive();
+                    hideAll();
+                    $("#waiting").addClass("is-active");
+                    $("#waiting-booklist").removeClass("is-hidden");
+                }
+
+                function switchToCheckin() {
+                    removeActive();
+                    hideAll();
+                    $("#checkin").addClass("is-active");
+                    $("#checkin-booklist").removeClass("is-hidden");
+                }
+
+                function switchToPending() {
+                    removeActive();
+                    hideAll();
+                    $("#pending").addClass("is-active");
+                    $("#pending-booklist").removeClass("is-hidden");
+                }
+
+                function switchToExpired() {
+                    removeActive();
+                    hideAll();
+                    $("#expired").addClass("is-active");
+                    $("#expired-booklist").removeClass("is-hidden");
+                }
+
+                function switchToSelesai() {
+                    removeActive();
+                    hideAll();
+                    $("#selesai").addClass("is-active");
+                    $("#selesai-booklist").removeClass("is-hidden");
+                }
+
+                $("#tab-checking").on('click', function() {
+                    $("#dropDown").addClass("is-active");
+                });
             </script>
         </body>
     </html>

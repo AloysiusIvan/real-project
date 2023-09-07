@@ -29,7 +29,8 @@ class User extends Authenticatable
         'keahlian',
         'foto_ktp',
         'password',
-        'validasi'
+        'validasi',
+        'reason_reject'
     ];
 
     /**

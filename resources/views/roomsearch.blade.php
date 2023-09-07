@@ -205,6 +205,7 @@
             var id = $(val).attr("data-id");
             var name = $(val).attr("data-name");
             var keperluan = $("#keperluan").val();
+            var jam_mulai = $("#jam_mulai").val();
             var tgl = $("#tgl").val();
             Swal.fire({
                 title: 'Booking ruangan ini?',

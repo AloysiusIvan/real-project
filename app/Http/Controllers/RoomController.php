@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Room;
 use App\Models\Photo;
+use App\Models\Booking;
 use RealRashid\SweetAlert\Facades\Alert;
 use File;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class RoomController extends Controller
 {
@@ -31,14 +33,38 @@ class RoomController extends Controller
         return view('admin/editroom', compact('roomdata','roomphoto'));
     }
 
+    public function searchroom (Request $request){
+        $room = Room::where('room_name','like','%'.$request->search.'%')->get();
+        return view('admin/roomdata')->with([
+            'data' => $room
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function notifadmin()
     {
-        //
+        $stillbook = Booking::join('users','trn_booking.id_user','users.id')
+            ->join('mst_room','trn_booking.id_room','mst_room.id')
+            ->where('tanggal',Carbon::today())
+            ->where('trn_booking.status','present')
+            ->where('jam_selesai','<=',Carbon::now()->format('H:i:s'))->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $stillbook
+        ]);
+    }
+    public function notifadmin5min()
+    {
+        $now = Carbon::now()->format('H:i:s');
+        $stillbook = Booking::whereRaw("(HOUR(jam_selesai) * 60 + MINUTE(jam_selesai)) - (HOUR(TIME('".$now."')) * 60 + MINUTE(TIME('".$now."'))) = 5")->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $stillbook
+        ]);
     }
 
     /**
@@ -55,17 +81,22 @@ class RoomController extends Controller
                 'room_name'=>$request->room_name,
                 'kapasitas'=>$request->kapasitas,
                 'status'=>"active",
-                'photo'=>"null"
+                'ac'=>$request->ac,
+                'photo'=>"init"
             ]);
-            foreach($request->room_photo as $key => $value){
-                $photo = $request->file('room_photo')[$key]->extension();
-                $newPhoto = $newroom->id.$key.'_'.date_format($newroom->updated_at,"YmdHis").'.'.$photo;
-                $request->file('room_photo')[$key]->storeAs('public/img/room/', $newPhoto);
-                DB::table('photo_room')->insert([
-                    'id_room'=>$newroom->id,
-                    'photo'=>$newPhoto
-                ]);
-            }
+            $photo = $request->file('room_photo')[0]->extension();
+            $newPhoto = Hash::make($newroom->id).'.'.$photo;
+            $newroom->update(array('photo' => $newPhoto));
+            $request->file('room_photo')[0]->storeAs('public/img/room/', $newPhoto);
+            // foreach($request->room_photo as $key => $value){
+            //     $photo = $request->file('room_photo')[$key]->extension();
+            //     $newPhoto = $newroom->id.$key.'_'.date_format($newroom->updated_at,"YmdHis").'.'.$photo;
+            //     $request->file('room_photo')[$key]->storeAs('public/img/room/', $newPhoto);
+            //     DB::table('photo_room')->insert([
+            //         'id_room'=>$newroom->id,
+            //         'photo'=>$newPhoto
+            //     ]);
+            // }
             Alert::toast('Success Add Room', 'success');
         } else {
             Alert::toast('Ruangan sudah ada', 'error');
@@ -79,9 +110,12 @@ class RoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function review()
     {
-        //
+        $review = Booking::join('mst_room','trn_booking.id_room','mst_room.id')
+            ->select('trn_booking.*','mst_room.room_name')
+            ->whereNot('trn_booking.review',null)->get();
+        return view('admin/review', compact('review'));
     }
 
     /**
@@ -90,9 +124,28 @@ class RoomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function notifuser()
     {
-        //
+        $stillbook = Booking::join('users','trn_booking.id_user','users.id')
+            ->join('mst_room','trn_booking.id_room','mst_room.id')
+            ->where('tanggal',Carbon::today())
+            ->where('id_user',auth()->user()->id)
+            ->where('trn_booking.status','present')
+            ->where('jam_selesai','<=',Carbon::now()->format('H:i:s'))->count();
+        return response()->json([
+            'status' => 'success',
+            'data' => $stillbook
+        ]);
+    }
+    public function notifuser5min()
+    {
+        $now = Carbon::now()->format('H:i:s');
+        $stillbook = Booking::where('id_user',auth()->user()->id)
+            ->whereRaw("(HOUR(jam_selesai) * 60 + MINUTE(jam_selesai)) - (HOUR(TIME('".$now."')) * 60 + MINUTE(TIME('".$now."'))) = 5")->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $stillbook
+        ]);
     }
 
     /**
@@ -110,20 +163,19 @@ class RoomController extends Controller
             if (!empty($request->photo)){
                 File::delete(storage_path("app/public/img/room/").$room->photo);
                 $photo = $request->file('photo')->extension();
+                $request->file('photo')->storeAs('public/img/room/',$room->photo);
                 $room->update([
                     'room_name'=>$request->room_name,
                     'kapasitas'=>$request->kapasitas,
                     'status'=>$request->stva,
-                    'photo'=> "prepare"
+                    'ac'=>$request->ac
                 ]);
-                $newPhoto = $room->id.'_'.date_format($room->updated_at,"YmdHis").'.'.$photo;
-                $request->file('photo')->storeAs('public/img/room/',$newPhoto);
-                $room->update(array('photo' => $newPhoto));
             } else{
                 $room->update([
                     'room_name'=>$request->room_name,
                     'status'=>$request->stva,
-                    'kapasitas'=>$request->kapasitas
+                    'kapasitas'=>$request->kapasitas,
+                    'ac'=>$request->ac
                 ]);
             }
             Alert::toast('Success Update', 'success');

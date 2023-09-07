@@ -20,7 +20,8 @@ class UserAccountController extends Controller
         $user = User::where('nik', '!=', 'admin')->where('validasi', 'wait')->orderBy('created_at','desc')->get();
         $userac = User::where('nik', '!=', 'admin')->where('validasi', 'valid')->orderBy('created_at','desc')->get();
         $userinac = User::where('nik', '!=', 'admin')->where('validasi', 'reject')->orderBy('created_at','desc')->get();
-        return view('admin/cmsuser', compact('user','userac','userinac'));
+        $usersus = User::where('nik', '!=', 'admin')->where('validasi', 'suspend')->orderBy('created_at','desc')->get();
+        return view('admin/cmsuser', compact('user','userac','userinac','usersus'));
     }
 
     public function searchuser (Request $request){
@@ -171,12 +172,28 @@ class UserAccountController extends Controller
         return redirect('cmsuser');
     }
 
-    public function reject(request $request, $id)
+    public function reject(request $request)
     {
-        $reject = User::findorfail($id);
+        $reject = User::findorfail($request->id);
         $reject->update(array('validasi' => 'reject'));
+        $reject->update(array('reason_reject' => $request->reason));
         Alert::toast('Success Reject', 'warning');
         return redirect('cmsuser');
+    }
+
+    public function suspend(request $request){
+        $suspend = User::findorfail($request->id);
+        $suspend->update(array('validasi' => 'suspend'));
+        $suspend->update(array('reason_reject' => $request->reason));
+        Alert::toast('Success Suspend', 'warning');
+        return 'success';
+    }
+
+    public function unsuspend(request $request){
+        $suspend = User::findorfail($request->id);
+        $suspend->update(array('validasi' => 'valid'));
+        Alert::toast('Success Validate', 'success');
+        return 'success';
     }
 
     /**

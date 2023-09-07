@@ -33,8 +33,8 @@
             width: 80px;
             height: 80px;
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 51%;
+            left: 36.5%;
             margin: -50px 0 0 -50px;
         }
         .lds-dual-ring:after {
@@ -146,7 +146,7 @@
                                 <span class="icon">
                                     <i class="mdi mdi-desktop-mac"></i>
                                 </span>
-                                <span class="menu-item-label">Dashboard</span>
+                                <span class="menu-item-label">Home</span>
                             </a>
                         </li>
                     </ul>
@@ -268,6 +268,26 @@
                                         </div>
                                         <div class="field is-horizontal">
                                             <div class="field-label is-normal">
+                                                <label class="label pt-2">AC</label>
+                                            </div>
+                                            <div class="field-body">
+                                                <div class="field">
+                                                    <div class="control">
+                                                        <input
+                                                            id="switchAc"
+                                                            type="checkbox"
+                                                            name="ac"
+                                                            class="switch is-rtl is-rounded"
+                                                            checked="checked"
+                                                            data-val="{{$item->ac}}">
+                                                        <label for="switchAc"></label>
+                                                        <input type="hidden" name="ac" id="ac" value="">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="field is-horizontal">
+                                            <div class="field-label is-normal">
                                                 <label class="label pt-2">Status</label>
                                             </div>
                                             <div class="field-body">
@@ -334,14 +354,14 @@
                                             </div>
                                         </div>
                                     </form>
-                                    @endforeach
+                                    
                                 </div>
                             </div>
                         </div>
                         <div class="tile is-6 is-parent">
                             <div class="card tile is-child" style="background-color:rgba(0,0,0,0);border:none">
                                 <div class="card-content p-0">
-                                    <section id="image-carousel" class="splide" aria-label="Beautiful Images">
+                                    <!-- <section id="image-carousel" class="splide" aria-label="Beautiful Images">
                                         <div class="splide__track">
                                             <ul class="splide__list">
                                                 @foreach ($roomphoto as $photo)
@@ -369,7 +389,9 @@
                                                 @endforeach
                                             </ul>
                                         </div>
-                                    </section>
+                                    </section> -->
+                                    <img src="{{asset('storage/img/room/'.$item->photo)}}" alt="">
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -379,7 +401,7 @@
                             <div class="level">
                                 <div class="level-left">
                                     <div class="level-item">
-                                        © 2022, Visit Techno Project
+                                        © 2023, Visit Techno Project
                                     </div>
                                 </div>
                             </div>
@@ -453,6 +475,21 @@
                             $("#stva").val("active");
                         } else {
                             $("#stva").val("inactive");
+                        }
+                    });
+
+                    var ac = $("#switchAc").attr("data-val");
+                    if (ac == "Non AC") {
+                        $("#switchAc").removeAttr("checked");
+                        $("#ac").val("Non AC");
+                    } else {
+                        $("#ac").val("AC");
+                    }
+                    $("#switchAc").change(function () {
+                        if ($("#switchAc").is(':checked')) {
+                            $("#ac").val("AC");
+                        } else {
+                            $("#ac").val("Non AC");
                         }
                     });
 

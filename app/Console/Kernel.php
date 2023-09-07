@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class Kernel extends ConsoleKernel
 {
@@ -15,7 +17,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->call(function () {
+            $currentDateTime = Carbon::now();
+    
+            DB::table('trn_booking')
+                ->whereDate('tanggal', '<=', $currentDateTime->toDateString())
+                ->where('jam_selesai', '<=', $currentDateTime->toTimeString())
+                ->where('status','=',null)
+                ->update(['status' => 'expired']);
+        })->everyFiveMinute();
     }
 
     /**

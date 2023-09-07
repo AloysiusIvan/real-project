@@ -1,49 +1,43 @@
-@foreach ($data as $item)
 <div class="columns is-centered pad-mob mar-mob">
-    <div
-        class="hov column is-6-tablet is-9-desktop box mt-3"
-        data-id="{{$item->id}}"
-        data-name="{{$item->room_name}}"
-        data-cap ="{{$item->cap}}"
-        data-capfull ="{{$item->kapasitas}}"
-        onclick="book(this)">
-        <div class="tile is-ancestor">
-            <div class="tile is-4 is-parent">
+    @foreach ($data as $index => $item)
+        @if ($index % 3 === 0)
+            @if ($index > 0)
+                </div><!-- Closing previous row -->
+            @endif
+            <div class="columns is-centered">
+        @endif
+
+        <div class="column is-4-tablet is-3-desktop">
+            <div class="tile is-parent is-vertical box mt-3 hov" data-id="{{$item->id}}" data-name="{{$item->room_name}}" data-cap="{{$item->cap}}" data-capfull="{{$item->kapasitas}}" onclick="book(this)">
                 <div class="tile is-child">
-                    <img src="{{asset('storage/img/room/'.$item->photo)}}">
-                </div>
-            </div>
-            <div class="tile is-vertical is-parent">
-                <div class="tile is-child">
-                    <p class="is-size-5">
-                        <strong>{{$item->room_name}}</strong>
-                    </p>
+                    <img src="{{asset('storage/img/room/'.$item->photo)}}" alt="{{$item->room_name}}">
                 </div>
                 <div class="tile is-child">
-                    <p class="is-size-6">Kapasitas :
-                        {{$item->kapasitas}}
-                        orang</p>
-                </div>
-                <div class="tile is-child">
-                    <p class="is-size-6">AC</p>
-                </div>
-                <div class="tile is-child">
-                    <p class="is-size-6">No Smoking</p>
-                </div>
-                <div class="tile is-child">
-                    <p class="is-size-6">Sisa Kapasitas : 
+                    <p class="is-size-5"><strong>{{$item->room_name}}</strong></p>
+                    <p class="is-size-6">Kapasitas: {{$item->kapasitas}} orang</p>
+                    <p class="is-size-6 actsisa">Sisa Kapasitas:
                         @if($item->cap == "")
-                        {{$item->kapasitas}}
+                        <b>{{$item->kapasitas}}</b>
                         @else
-                        {{$item->cap}}
+                        <b>{{$item->cap}}</b>
                         @endif orang
                     </p>
+                    <p class="is-size-6">{{$item->ac}}</p>
+                    @if($item->ac == "AC")
+                    <p class="is-size-6">No Smoking</p>
+                    @else
+                    <p class="is-size-6">Smoking Area</p>
+                    @endif
                 </div>
             </div>
         </div>
-    </div>
+
+        @if ($loop->last || ($loop->iteration % 3 === 0))
+            </div><!-- Closing row after every three items or on the last item -->
+        @endif
+    @endforeach
 </div>
-@endforeach
+
 <div id="group" class="modal">
     <div class="modal-background"></div>
     <div class="modal-content">
@@ -82,11 +76,39 @@
     </div>
 </div>
 <script>
+    function refresh(){
+        $.ajax({
+            type: "get",
+            url: "{{route('search')}}",
+            data: {
+                tgl: $("#tgl").val(),
+                jam_mulai: $("#jam_mulai").val(),
+                jam_selesai: $("#jam_selesai").val()
+            },
+            beforeSend: function () {
+                $("#overlay").show();
+            },
+            success: function (data) {
+                $("#read").html(data);
+                $(".hov").hover(function () {
+                    $(this).addClass("bor");
+                }, function () {
+                    $(this).removeClass("bor");
+                });
+                $("#overlay").hide();
+            }
+        });
+    }
+
     function book(val) {
+        var htmlContent = $(val).find(".actsisa").html();
+        var realsisa = htmlContent.replace(/\D/g, "");
         var id = $(val).attr("data-id");
         var name = $(val).attr("data-name");
         var cap = $(val).attr("data-cap");
         var keperluan = $("#keperluan").val();
+        var jam_mulai = $("#jam_mulai").val();
+        var jam_selesai = $("#jam_selesai").val();
         var tgl = $("#tgl").val();
         if (keperluan == ""){
             Swal.fire({
@@ -94,7 +116,19 @@
                 icon: 'error',
                 confirmButtonColor: '#2c598d'
             })    
-        } else if (cap == "0"){
+        } else if (jam_mulai == ""){
+            Swal.fire({
+                title: 'Tolong isi waktu mulai',
+                icon: 'error',
+                confirmButtonColor: '#2c598d'
+            })
+        } else if (jam_selesai == ""){
+            Swal.fire({
+                title: 'Tolong isi waktu selesai',
+                icon: 'error',
+                confirmButtonColor: '#2c598d'
+            })
+        } else if (realsisa == "0"){
             Swal.fire({
                 title: 'Ruangan sudah penuh',
                 icon: 'error',
@@ -107,12 +141,12 @@
                 icon: 'question',
                 showCancelButton: true,
                 showDenyButton: true,
-                denyButtonText: `Booking Group`,
+                denyButtonText: 'Booking Group',
                 confirmButtonColor: '#2c598d',
                 denyButtonColor: '#d8e3f8',
                 cancelButtonColor: '#ffffff'
             })
-            if (cap == "1"){
+            if (realsisa == "1"){
                 $(".swal2-deny").css("display", "none");
             }
             $(".swal2-confirm").click(function () {
@@ -120,6 +154,8 @@
                     type: "get",
                     data: {
                         keperluan: $("#keperluan").val(),
+                        jam_mulai: $("#jam_mulai").val(),
+                        jam_selesai: $("#jam_selesai").val(),
                         tgl: $("#tgl").val(),
                         id_room: $(val).attr("data-id")
                     },
@@ -144,6 +180,9 @@
                     }
                 });
             });
+            $(".swal2-cancel").click(function(){
+                refresh();
+            });
             $(".swal2-deny").click(function(){
                 $("#group").addClass("is-active");
                 $("#closegroup").click(function(){
@@ -151,14 +190,34 @@
                     $(".par").remove();
                     $("#nik2").val("");
                     x = 2;
-                    location.reload();
+                    refresh();
                 });
                 $(".modal-background").click(function(){
                     $("#group").removeClass("is-active");
                     $(".par").remove();
                     $("#nik2").val("");
                     x = 2;
-                    location.reload();
+                    $.ajax({
+                        type: "get",
+                        url: "{{route('search')}}",
+                        data: {
+                            tgl: $("#tgl").val(),
+                            jam_mulai: $("#jam_mulai").val(),
+                            jam_selesai: $("#jam_selesai").val()
+                        },
+                        beforeSend: function () {
+                            $("#overlay").show();
+                        },
+                        success: function (data) {
+                            $("#read").html(data);
+                            $(".hov").hover(function () {
+                                $(this).addClass("bor");
+                            }, function () {
+                                $(this).removeClass("bor");
+                            });
+                            $("#overlay").hide();
+                        }
+                    });
                 });
                 if (cap != ""){
                     var maxnik = cap;
@@ -201,6 +260,8 @@
                     nikgroup: nikgroup,
                     keperluan: $("#keperluan").val(),
                     tgl: $("#tgl").val(),
+                    jam_mulai: $("#jam_mulai").val(),
+                    jam_selesai: $("#jam_selesai").val(),
                     id_room: $(val).attr("data-id")
                 },
                 success: function(data){
@@ -211,6 +272,10 @@
                     } else if (data == "not found nik") {
                         Swal.fire(
                             {title: 'Ooops...', text: 'NIK belum terdaftar', icon: 'error', confirmButtonColor: '#2c598d'}
+                        )
+                    } else if (data == "suspended") {
+                        Swal.fire(
+                            {title: 'Ooops...', text: 'Ada akun yang disuspend', icon: 'error', confirmButtonColor: '#2c598d'}
                         )
                     } else if (data == "duplicate") {
                         Swal.fire(
@@ -255,5 +320,8 @@
         .mar-mob{
             margin-top: 0.5rem;
         }
+    }
+    .tile.is-vertical>.tile.is-child:not(:last-child) {
+        margin-bottom: 0rem!important;
     }
 </style>

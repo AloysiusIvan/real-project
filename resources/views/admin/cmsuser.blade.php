@@ -54,6 +54,7 @@
         }
     </style>
     <body>
+        @include('admin/swaljs')
         @include('sweetalert::alert')
         <div id="app">
             <nav id="navbar-main" class="navbar is-fixed-top">
@@ -136,6 +137,16 @@
                             </a>
                         </li>
                     </ul>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="/review" class="has-icon">
+                                <span class="icon">
+                                    <i class="mdi mdi-book"></i>
+                                </span>
+                                <span class="menu-item-label">Review</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </aside>
             <section class="section is-title-bar">
@@ -176,7 +187,7 @@
                                     <span class="icon is-small">
                                         <i class="mdi mdi-clock" aria-hidden="true"></i>
                                     </span>
-                                    <span>Waiting</span>
+                                    <span>Menunggu</span>
                                 </a>
                             </li>
                             <li id="active">
@@ -184,7 +195,7 @@
                                     <span class="icon is-small">
                                         <i class="mdi mdi-check-circle" aria-hidden="true"></i>
                                     </span>
-                                    <span>Approved</span>
+                                    <span>Valid</span>
                                 </a>
                             </li>
                             <li id="inactive">
@@ -192,7 +203,15 @@
                                     <span class="icon is-small">
                                         <i class="mdi mdi-close-circle" aria-hidden="true"></i>
                                     </span>
-                                    <span>Rejected</span>
+                                    <span>Ditolak</span>
+                                </a>
+                            </li>
+                            <li id="suspend">
+                                <a href="#suspend" onclick="switchToSuspend()">
+                                    <span class="icon is-small">
+                                        <i class="mdi mdi-alert-circle" aria-hidden="true"></i>
+                                    </span>
+                                    <span>Ditangguhkan</span>
                                 </a>
                             </li>
                         </ul>
@@ -277,6 +296,28 @@
                                         </tr>
                                         @endforeach
                                     </tbody>
+                                    <tbody class="is-hidden" id="suspend-tab-content">
+                                        @foreach ($usersus as $item4)
+                                        <tr>
+                                            <td data-label="NIK">{{$item4->nik}}</td>
+                                            <td data-label="Name">{{$item4->name}}</td>
+                                            <td data-label="Profesi">{{$item4->profesi}}</td>
+                                            <td data-label="nama Institusi">{{$item4->nama_institusi}}</td>
+                                            <td data-label="Created">{{$item4->created_at->format('d M, Y')}}</td>
+                                            <td class="is-actions-cell">
+                                                <div class="buttons is-right">
+                                                    <a href="{{route('detailuser',$item4->id)}}">
+                                                        <button class="button is-small is-primary" type="button">
+                                                            <span class="icon">
+                                                                <i class="mdi mdi-eye"></i>
+                                                            </span>
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
                                 </table>
                                 <table id="table-search" class="table is-fullwidth is-striped is-hoverable is-fullwidth" style="display:none;"></table>
                             </div>
@@ -290,7 +331,7 @@
                     <div class="level">
                         <div class="level-left">
                             <div class="level-item">
-                                © 2022, Visit techno Project
+                                © 2023, Visit techno Project
                             </div>
                         </div>
                     </div>
@@ -361,6 +402,13 @@
                 hideAll();
                 $("#active").addClass("is-active");
                 $("#active-tab-content").removeClass("is-hidden");
+            }
+
+            function switchToSuspend() {
+                removeActive();
+                hideAll();
+                $("#suspend").addClass("is-active");
+                $("#suspend-tab-content").removeClass("is-hidden");
             }
 
             $("#search").keyup(function () {

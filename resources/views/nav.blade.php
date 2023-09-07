@@ -39,4 +39,5 @@
                 </div>
             </div>
         </div>
+        @include('swaljsuser')
     </nav>

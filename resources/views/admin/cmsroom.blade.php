@@ -20,6 +20,9 @@
             type="text/css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bulma-switch@2.0.4/dist/css/bulma-switch.min.css">
     </head>
     <style>
         .tabs li.is-active a {
@@ -71,8 +74,12 @@
         .button.is-primary:hover {
             background-color: #234771;
         }
+        .switch[type=checkbox]:checked+label::before, .switch[type=checkbox]:checked+label:before {
+            background: #2c598d;
+        }
     </style>
     <body>
+        @include('admin/swaljs')
         @include('sweetalert::alert')
         <div id="app">
             <nav id="navbar-main" class="navbar is-fixed-top">
@@ -121,7 +128,7 @@
                                 <span class="icon">
                                     <i class="mdi mdi-desktop-mac"></i>
                                 </span>
-                                <span class="menu-item-label">Dashboard</span>
+                                <span class="menu-item-label">Home</span>
                             </a>
                         </li>
                     </ul>
@@ -152,6 +159,16 @@
                                     <i class="mdi mdi-view-list"></i>
                                 </span>
                                 <span class="menu-item-label">Booking List</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="/review" class="has-icon">
+                                <span class="icon">
+                                    <i class="mdi mdi-book"></i>
+                                </span>
+                                <span class="menu-item-label">Review</span>
                             </a>
                         </li>
                     </ul>
@@ -186,6 +203,7 @@
                 </div>
             </section>
             <section class="section is-main-section">
+            <input  id="search" class="search input mb-3" type="text" placeholder="Search" style="max-width:25vw;">
                 <div class="card has-table">
                     <header class="card-header">
                         <p class="card-header-title">
@@ -203,7 +221,7 @@
                     <div class="card-content">
                         <div class="b-table has-pagination">
                             <div class="table-wrapper has-mobile-cards">
-                                <table class="table is-fullwidth is-striped is-hoverable is-fullwidth">
+                                <table id="initroom" class="table is-fullwidth is-striped is-hoverable is-fullwidth">
                                     <thead>
                                         <tr>
                                             <th>Nama Ruangan</th>
@@ -263,6 +281,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                                <table id="table-search" class="table is-fullwidth is-striped is-hoverable is-fullwidth" style="display:none;"></table>
                             </div>
                             <?php 
                                 $total = $room->total();
@@ -270,7 +289,7 @@
                                 $current = $room->currentPage();
                                 $totalpage = ceil($total / $page);
                             ?>
-                            <div class="notification">
+                            <div id="pagination" class="notification">
                                 <div class="level">
                                     <div class="level-left">
                                         <div class="level-item">
@@ -302,7 +321,7 @@
                     <div class="level">
                         <div class="level-left">
                             <div class="level-item">
-                                © 2022, Visit techno Project
+                                © 2023, Visit techno Project
                             </div>
                         </div>
                     </div>
@@ -345,6 +364,23 @@
                                         id="roomcap">
                                 </div>
                             </div>
+                            <div class="field is-horizontal">
+                                <label class="label mb-0 mr-3" style="display:flex;align-items: center;">AC</label>
+                                <div class="field-body">
+                                    <div class="field">
+                                        <div class="control">
+                                            <input
+                                                id="switchAc"
+                                                type="checkbox"
+                                                name="status"
+                                                class="switch is-rtl is-rounded"
+                                                checked="checked">
+                                            <label for="switchAc"></label>
+                                            <input type="hidden" name="ac" id="ac" value="AC">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="field">
                                 <label class="label">Foto Ruangan</label>
                                 <div class="file has-name">
@@ -366,11 +402,6 @@
                                         </span>
                                         <span class="file-name"></span>
                                     </label>
-                                    <span id="addmore" class="button is-primary" type="button" style="background-color:#d8e3f8;color:#111c2b; margin-left:0.5rem;">
-                                        <span class="icon">
-                                            <i class="mdi mdi-plus"></i>
-                                        </span>
-                                    </span>
                                 </div>
                             </div>
                             <div id="wrap"></div>
@@ -420,7 +451,7 @@
 
             <!-- Scripts below are for demo only -->
             <script
-                type="text/javascript"
+                type="text/javascript"  
                 src="{{ URL::asset('adminsrc/js/main.min.js') }}"></script>
 
             <!-- Icons below are for demo only. Feel free to use any icon pack. Docs:
@@ -585,6 +616,36 @@
                             .files[0]
                             .name;
                     };
+
+                $("#search").keyup(function () {
+                    $.ajax({
+                        type: "get",
+                        url: "{{route('searchroom')}}",
+                        data: {
+                            search: $("#search").val()
+                        },
+                        success: function (data) {
+                            if(!$("#search").val()){
+                                $("#initroom").show();
+                                $("#pagination").show();
+                                $("#table-search").hide();
+                            } else{
+                                $("#initroom").hide();
+                                $("#pagination").hide();
+                                $("#table-search").html(data);
+                                $("#table-search").show();
+                            }
+                        }
+                    });
+                });
+
+                $("#switchAc").change(function () {
+                    if ($("#switchAc").is(':checked')) {
+                        $("#ac").val("AC");
+                    } else {
+                        $("#ac").val("Non AC");
+                    }
+                });
             </script>
         </body>
     </html>

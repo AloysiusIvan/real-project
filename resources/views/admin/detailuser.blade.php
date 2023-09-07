@@ -18,6 +18,8 @@
             href="https://fonts.googleapis.com/css?family=Nunito"
             rel="stylesheet"
             type="text/css">
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     </head>
     <style>
         .tabs li.is-active a {
@@ -27,8 +29,47 @@
         #primarytechno {
             background-color: #2c598d;
         }
+        .lds-dual-ring {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            top: 51%;
+            left: 36.5%;
+            margin: -50px 0 0 -50px;
+        }
+        .lds-dual-ring:after {
+            content: " ";
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border-radius: 50%;
+            border: 6px solid #fff;
+            border-color: #fff transparent #fff transparent;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        #overlay {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            top: 0;
+            background: rgba(0, 0, 0, 0.5);
+        }
     </style>
     <body>
+        <div id="overlay" hidden="hidden">
+            <div class="lds-dual-ring"></div>
+        </div>
         @include('sweetalert::alert')
         <div id="app">
             <nav id="navbar-main" class="navbar is-fixed-top">
@@ -77,7 +118,7 @@
                                 <span class="icon">
                                     <i class="mdi mdi-desktop-mac"></i>
                                 </span>
-                                <span class="menu-item-label">Dashboard</span>
+                                <span class="menu-item-label">Home</span>
                             </a>
                         </li>
                     </ul>
@@ -339,16 +380,38 @@
                                             </a>
                                         </div>
                                         <div class="control">
-                                            <a href="{{route('reject',$item->id)}}">
-                                                <button type="button" class="button is-danger">
+                                                <button id="reject" type="button" class="button is-danger" data-id="{{$item->id}}" onclick="reject(this)">
                                                     <span>Reject</span>
                                                 </button>
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            @else @endif @endforeach
+                            @elseif ($item->validasi=="valid")
+                            <div class="field-body">
+                                <div class="field">
+                                    <div class="field is-grouped">
+                                        <div class="control">
+                                            <button id="suspend" type="button" class="button is-danger" data-id="{{$item->id}}" onclick="suspend(this)">
+                                                <span>Suspend</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @elseif ($item->validasi=="suspend")
+                            <div class="field-body">
+                                <div class="field">
+                                    <div class="field is-grouped">
+                                        <div class="control">
+                                            <button id="unsuspend" type="button" class="button is-success" data-id="{{$item->id}}" onclick="unsuspend(this)">
+                                                <span>Unsuspend</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif @endforeach
                         </div>
                     </div>
                 </div>
@@ -359,7 +422,7 @@
                     <div class="level">
                         <div class="level-left">
                             <div class="level-item">
-                                © 2022, Visit techno Project
+                                © 2023, Visit techno Project
                             </div>
                         </div>
                     </div>
@@ -399,4 +462,109 @@
             rel="stylesheet"
             href="https://cdn.materialdesignicons.com/4.9.95/css/materialdesignicons.min.css">
     </body>
+    <script>
+        function reject(vari){
+            Swal.fire({
+                title: 'Alasan Reject',
+                input: 'text',
+                showCancelButton: true,
+                confirmButtonColor: '#2c598d',
+                confirmButtonText: 'Submit',
+                cancelButtonColor: '#ffffff'
+            });
+            $(".swal2-confirm").click(function(){
+                $.ajax({
+                    type: "get",
+                    url: "{{url('reject')}}",
+                    data: {
+                        id: $(vari).attr("data-id"),
+                        reason: $(".swal2-input").val()
+                    },
+                    beforeSend: function () {
+                        $("#overlay").show();
+                    },
+                    success: function (data) {
+                        window.location.replace("{{url('cmsuser')}}");
+                    }
+                });
+            });
+        }
+
+        function suspend(vari){
+            Swal.fire({
+                title: 'Alasan Suspend',
+                input: 'text',
+                showCancelButton: true,
+                confirmButtonColor: '#2c598d',
+                confirmButtonText: 'Submit',
+                cancelButtonColor: '#ffffff'
+            });
+            $(".swal2-confirm").click(function(){
+                $.ajax({
+                    type: "get",
+                    url: "{{url('suspend')}}",
+                    data: {
+                        id: $(vari).attr("data-id"),
+                        reason: $(".swal2-input").val()
+                    },
+                    beforeSend: function () {
+                        $("#overlay").show();
+                    },
+                    success: function (data) {
+                        window.location.replace("{{url('cmsuser')}}");
+                    }
+                });
+            });
+        }
+
+        function unsuspend(vari){
+            Swal.fire({
+                icon: 'question',
+                title: 'Unsuspend User?',
+                showCancelButton: true,
+                confirmButtonColor: '#2c598d',
+                confirmButtonText: 'Yes',
+                cancelButtonColor: '#ffffff'
+            });
+            $(".swal2-confirm").click(function(){
+                $.ajax({
+                    type: "get",
+                    url: "{{url('unsuspend')}}",
+                    data: {
+                        id: $(vari).attr("data-id"),
+                        reason: $(".swal2-input").val()
+                    },
+                    beforeSend: function () {
+                        $("#overlay").show();
+                    },
+                    success: function (data) {
+                        window.location.replace("{{url('cmsuser')}}");
+                    }
+                });
+            });
+        }
+    </script>
+    <style>
+    .swal2-styled.swal2-deny{
+        color: #111c2b;
+    }
+    .swal2-styled.swal2-cancel {
+        color: #2c598d;
+    }
+    .button.sec{
+        background-color: #d3e3ff;
+    }
+    .button.err{
+        background-color: #ffdad6;
+    }
+    .button.text.is-primary{
+        background-color: rgba(255, 99, 71, 0);
+        color: #2c598d;
+    }
+    @media all and (max-width: 1023px) {
+        .mar-mob{
+            margin-top: 0.5rem;
+        }
+    }
+</style>
 </html>

@@ -94,8 +94,8 @@
             width: 80px;
             height: 80px;
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 51%;
+            left: 51.2%;
             margin: -50px 0 0 -50px;
         }
         .lds-dual-ring:after {
@@ -159,9 +159,39 @@
                                         placeholder="Pilih Tanggal"
                                         id="tgl"
                                         name="tgl"
-                                        class="input"
+                                        class="input is-fullwidth"
                                         type="date"
                                         required="required">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label class="label">Jam Mulai</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="jam_mulai" name="jam_mulai" required="required">
+                                            <option value="" selected="selected" hidden="hidden">Pilih Jam Mulai</option>
+                                            <option value="08:00:00">08:00</option>
+                                            <option value="09:00:00">09:00</option>
+                                            <option value="10:00:00">10:00</option>
+                                            <option value="11:00:00">11:00</option>
+                                            <option value="12:00:00">12:00</option>
+                                            <option value="13:00:00">13:00</option>
+                                            <option value="14:00:00">14:00</option>
+                                            <option value="15:00:00">15:00</option>
+                                            <option value="16:00:00">16:00</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label class="label">Jam Selesai</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="jam_selesai" name="jam_selesai" required="required">
+                                            <option value="" selected="selected" hidden="hidden">Pilih Jam Selesai</option>
+                                            <option value="none" disabled>-----</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -186,7 +216,9 @@
                 type: "get",
                 url: "{{url('booking/search')}}",
                 data: {
-                    tgl: $("#tgl").val()
+                    tgl: $("#tgl").val(),
+                    jam_mulai: $("#jam_mulai").val(),
+                    jam_selesai: $("#jam_selesai").val()
                 },
                 success: function (data) {
                     $("#read").html(data);
@@ -195,11 +227,25 @@
         }
 
         $("#tgl").change(function () {
+            var date = new Date();
+            var dateNow = date.toISOString().split('T')[0];
+            var currentHour = date.getHours();
+            if ($("#tgl").val() == dateNow) {
+                $("#jam_mulai").find("option").each(function() {
+                    var optionValue = $(this).val();
+                    if (optionValue <= currentHour+":00:00") {
+                        $(this).hide();
+                    }
+                });
+            } else { $('#jam_mulai option').not('[value=""]').show(); }
+            $("#jam_mulai").val("");
             $.ajax({
                 type: "get",
                 url: "{{route('search')}}",
                 data: {
-                    tgl: $("#tgl").val()
+                    tgl: $("#tgl").val(),
+                    jam_mulai: $("#jam_mulai").val(),
+                    jam_selesai: $("#jam_selesai").val()
                 },
                 beforeSend: function () {
                     $("#overlay").show();
@@ -214,6 +260,52 @@
                     $("#overlay").hide();
                 }
             });
+        });
+
+        $("#jam_selesai").change(function () {
+            $.ajax({
+                type: "get",
+                url: "{{route('search')}}",
+                data: {
+                    tgl: $("#tgl").val(),
+                    jam_mulai: $("#jam_mulai").val(),
+                    jam_selesai: $("#jam_selesai").val()
+                },
+                beforeSend: function () {
+                    $("#overlay").show();
+                },
+                success: function (data) {
+                    $("#read").html(data);
+                    $(".hov").hover(function () {
+                        $(this).addClass("bor");
+                    }, function () {
+                        $(this).removeClass("bor");
+                    });
+                    $("#overlay").hide();
+                }
+            });
+        });
+
+        $("#jam_mulai").change(function(){
+            if($("#jam_mulai").val()=="09:00:00"){
+                $("#jam_selesai").html('<option value="" selected="selected" hidden="hidden">Pilih Jam Selesai</option> <option value="10:00:00">10:00</option> <option value="11:00:00">11:00</option> <option value="12:00:00">12:00</option> <option value="13:00:00">13:00</option> <option value="14:00:00">14:00</option> <option value="15:00:00">15:00</option> <option value="16:00:00">16:00</option> <option value="17:00:00">17:00</option>');
+            }else if($("#jam_mulai").val()=="10:00:00"){
+                $("#jam_selesai").html('<option value="" selected="selected" hidden="hidden">Pilih Jam Selesai</option> <option value="11:00:00">11:00</option> <option value="12:00:00">12:00</option> <option value="13:00:00">13:00</option> <option value="14:00:00">14:00</option> <option value="15:00:00">15:00</option> <option value="16:00:00">16:00</option> <option value="17:00:00">17:00</option>');
+            }else if($("#jam_mulai").val()=="11:00:00"){
+                $("#jam_selesai").html('<option value="" selected="selected" hidden="hidden">Pilih Jam Selesai</option> <option value="12:00:00">12:00</option> <option value="13:00:00">13:00</option> <option value="14:00:00">14:00</option> <option value="15:00:00">15:00</option> <option value="16:00:00">16:00</option> <option value="17:00:00">17:00</option>');
+            }else if($("#jam_mulai").val()=="12:00:00"){
+                $("#jam_selesai").html('<option value="" selected="selected" hidden="hidden">Pilih Jam Selesai</option> <option value="13:00:00">13:00</option> <option value="14:00:00">14:00</option> <option value="15:00:00">15:00</option> <option value="16:00:00">16:00</option> <option value="17:00:00">17:00</option>');
+            }else if($("#jam_mulai").val()=="13:00:00"){
+                $("#jam_selesai").html('<option value="" selected="selected" hidden="hidden">Pilih Jam Selesai</option> <option value="14:00:00">14:00</option> <option value="15:00:00">15:00</option> <option value="16:00:00">16:00</option> <option value="17:00:00">17:00</option>');
+            }else if($("#jam_mulai").val()=="14:00:00"){
+                $("#jam_selesai").html('<option value="" selected="selected" hidden="hidden">Pilih Jam Selesai</option> <option value="15:00:00">15:00</option> <option value="16:00:00">16:00</option> <option value="17:00:00">17:00</option>');
+            }else if($("#jam_mulai").val()=="15:00:00"){
+                $("#jam_selesai").html('<option value="" selected="selected" hidden="hidden">Pilih Jam Selesai</option> <option value="16:00:00">16:00</option> <option value="17:00:00">17:00</option>');
+            }else if($("#jam_mulai").val()=="16:00:00"){
+                $("#jam_selesai").html('<option value="" selected="selected" hidden="hidden">Pilih Jam Selesai</option> <option value="17:00:00">17:00</option>');
+            } else{
+                $("#jam_selesai").html('<option value="" selected="selected" hidden="hidden">Pilih Jam Selesai</option> <option value="09:00:00">09:00</option> <option value="10:00:00">10:00</option> <option value="11:00:00">11:00</option> <option value="12:00:00">12:00</option> <option value="13:00:00">13:00</option> <option value="14:00:00">14:00</option> <option value="15:00:00">15:00</option> <option value="16:00:00">16:00</option> <option value="17:00:00">17:00</option>');
+            }
         });
 
         $(function () {

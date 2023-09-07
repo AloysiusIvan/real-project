@@ -10,6 +10,6 @@ class Room extends Model
     protected $table = "mst_room";
     protected $primaryKey = "id";
     protected $fillable = [
-        'id', 'room_name', 'kapasitas','status', 'photo'
+        'id', 'room_name', 'kapasitas','status', 'photo', 'ac', 'smoke'
     ];
 }

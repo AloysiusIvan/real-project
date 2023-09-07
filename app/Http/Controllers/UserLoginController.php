@@ -13,6 +13,7 @@ class UserLoginController extends Controller
     {
         $credentials = $request->only('nik','password');
         $iduser = User::where('nik', $request->nik)->get('id');
+        $reject = User::where('nik', $request->nik)->value('reason_reject');
  
         if (Auth::attempt($credentials) && Auth::user()->validasi == "valid") {
             return redirect()->intended('home');
@@ -20,8 +21,11 @@ class UserLoginController extends Controller
             Alert::info('Proses Validasi', 'Menunggu Validasi Admin')->showConfirmButton('OK', '#2c598d');
             return redirect()->intended('login');
         }elseif (Auth::attempt($credentials) && Auth::user()->validasi == "reject"){
-            Alert::warning('Data Tidak Valid', 'Silahkan melakukan registrasi kembali')->showConfirmButton('Registrasi', '#2c598d')->showCancelButton('Cancel');
+            Alert::warning('Data Tidak Valid', $reject)->showConfirmButton('Update Data', '#2c598d')->showCancelButton('Cancel');
             return view('login', compact('iduser'));
+        }elseif (Auth::attempt($credentials) && Auth::user()->validasi == "suspend"){
+            Alert::warning('Akun Anda di Suspend', $reject)->showConfirmButton('OK', '#2c598d');
+            return redirect()->intended('login');
         }else{
             Alert::error('NIK Belum Terdaftar', 'Silahkan Registrasi')->showConfirmButton('OK', '#2c598d');
             return redirect()->intended('login');
